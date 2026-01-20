@@ -611,17 +611,46 @@
         msg.textContent = `${label} 관점에서 오해 가능성이 큽니다. 맥락·근거 보완을 우선 검토하세요.`;
       }
 
-      renderKpi(kpi, all);
-      renderList(document.getElementById("commonList"), common);
-      renderList(document.getElementById("categoryList"), cat);
+      // 체크리스트 렌더
+      const listEl = document.getElementById("checklist");
+      listEl.innerHTML = "";
+      const items = checklistByCategory[category];
 
+      items.forEach(it => {
+        const st = res.itemStatus[it.key] || "WARN";
+        const li = document.createElement("li");
+        if(st === "OK") li.innerHTML = `<span class="ok">✓</span> ${it.text}`;
+        if(st === "WARN") li.innerHTML = `<span class="warn">△</span> ${it.text}`;
+        if(st === "BAD") li.innerHTML = `<span class="bad">✕</span> ${it.text}`;
+        listEl.appendChild(li);
+      });
+
+      // 보완 포인트 렌더
+      const fixesEl = document.getElementById("fixes");
+      fixesEl.innerHTML = "";
+      if(res.fixes.length === 0){
+        const li = document.createElement("li");
+        li.textContent = "현재 단계에서는 추가 보완 포인트가 크게 확인되지 않았습니다.";
+        fixesEl.appendChild(li);
+      } else {
+        res.fixes.forEach(f => {
+          const li = document.createElement("li");
+          li.textContent = f;
+          fixesEl.appendChild(li);
+        });
+      }
+
+      // 결과 영역 노출
       const wrap = document.getElementById("resultWrap");
       wrap.style.display = "block";
       wrap.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
-    // 글로벌 스코프 노출
-    window.runCheck = runCheck;
+    // TODO (향후 AI 연결):
+    // runCheck() 내부에서 evaluate() 대신 fetch('/api/check', ...)로 JSON을 받아
+    // 같은 UI 렌더링 함수로 표시하면 구조 변경 없이 AI로 치환 가능합니다.
   </script>
+
 </body>
 </html>
+ 
