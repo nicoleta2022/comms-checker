@@ -3,490 +3,625 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>구조 점검 도구 (공통 + 카테고리)</title>
+  <title>Comms Checker</title>
   <style>
     :root{
-      --bg:#0b0f17; --card:#121a26; --line:#233044; --text:#eaf0ff; --muted:#a8b3c7;
-      --green:#22c55e; --yellow:#f59e0b; --red:#ef4444; --blue:#60a5fa;
+      --bg:#0b0f17;
+      --card:#121a26;
+      --line:#233044;
+      --text:#eaf0ff;
+      --muted:#a8b3c7;
+      --green:#22c55e;
+      --yellow:#f59e0b;
+      --red:#ef4444;
+      --blue:#60a5fa;
     }
     *{box-sizing:border-box}
-    body{margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Apple SD Gothic Neo,Noto Sans KR,sans-serif;
-      background:linear-gradient(180deg,#070a11 0%, #0b0f17 40%, #070a11 100%); color:var(--text);}
-    .wrap{max-width:980px; margin:0 auto; padding:24px 16px 56px}
-    h1{font-size:22px; margin:0 0 8px}
-    .sub{color:var(--muted); line-height:1.5; margin:0 0 18px}
-    .card{background:rgba(18,26,38,.9); border:1px solid var(--line); border-radius:14px; padding:16px; margin:12px 0}
-    .row{display:flex; gap:12px; flex-wrap:wrap; align-items:center}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Apple SD Gothic Neo,Noto Sans KR,sans-serif;
+      background:linear-gradient(180deg,#0b0f17 0%, #070a11 100%);
+      color:var(--text);
+    }
+    .wrap{max-width:980px; margin:0 auto; padding:24px 16px 56px;}
+    h1{font-size:26px; margin:0 0 8px;}
+    .sub{color:var(--muted); line-height:1.6; margin:0 0 16px;}
+
+    .card{background:rgba(18,26,38,.95); border:1px solid var(--line); border-radius:14px; padding:16px; margin:12px 0;}
+    .row{display:flex; gap:12px; flex-wrap:wrap; align-items:center;}
     label{font-size:13px; color:var(--muted)}
     select, textarea, button{
-      border-radius:12px; border:1px solid var(--line); background:#0d1420; color:var(--text);
-      padding:10px 12px; font-size:14px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#0d1420;
+      color:var(--text);
+      padding:10px 12px;
+      font-size:14px;
     }
     select{min-width:260px}
     textarea{width:100%; min-height:220px; resize:vertical; line-height:1.6}
-    button{cursor:pointer; background:linear-gradient(180deg,#1b2a44 0%, #132035 100%); border:1px solid #2a3b55}
+    button{
+      cursor:pointer;
+      background:linear-gradient(180deg,#1b2a44 0%, #132035 100%);
+      border:1px solid #2a3b55;
+      font-weight:800;
+      padding:10px 14px;
+    }
     button:hover{border-color:#3a5174}
-    button:disabled{opacity:.5; cursor:not-allowed}
+    button:disabled{opacity:.55; cursor:not-allowed}
+
     .hint{color:var(--muted); font-size:12px; margin-top:6px}
-    details{border:1px solid var(--line); border-radius:12px; padding:12px; background:rgba(13,20,32,.6)}
-    summary{cursor:pointer; font-weight:600}
-    .pill{display:inline-flex; gap:6px; align-items:center; border:1px solid var(--line); padding:6px 10px; border-radius:999px; color:var(--muted); font-size:12px}
+    .meta{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+
+    .pill{display:inline-flex; align-items:center; gap:8px; border:1px solid var(--line); border-radius:999px; padding:6px 10px; font-size:12px; color:var(--muted)}
     .dot{width:10px; height:10px; border-radius:999px; display:inline-block}
-    .g{background:var(--green)} .y{background:var(--yellow)} .r{background:var(--red)}
-    .legend{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
-    .kpi{display:flex; gap:10px; flex-wrap:wrap; margin-top:8px}
-    .kpi .pill{color:var(--text)}
-    .kpi strong{font-weight:800}
-    .section-title{display:flex; align-items:center; justify-content:space-between; gap:12px; margin:0 0 10px}
-    .section-title h2{font-size:16px; margin:0}
-    .small{font-size:12px; color:var(--muted)}
-    .items{display:flex; flex-direction:column; gap:10px}
-    .item{border:1px solid var(--line); border-radius:12px; padding:12px; background:rgba(13,20,32,.45)}
-    .item-head{display:flex; gap:10px; align-items:flex-start; justify-content:space-between}
-    .item-left{display:flex; gap:10px; align-items:flex-start}
-    .badge{min-width:118px; display:inline-flex; gap:8px; align-items:center; padding:6px 10px; border-radius:999px; font-size:12px; font-weight:700}
-    .badge.g{background:rgba(34,197,94,.15); color:var(--green); border:1px solid rgba(34,197,94,.35)}
-    .badge.y{background:rgba(245,158,11,.15); color:var(--yellow); border:1px solid rgba(245,158,11,.35)}
-    .badge.r{background:rgba(239,68,68,.15); color:var(--red); border:1px solid rgba(239,68,68,.35)}
-    .item-title{font-weight:800; margin:0 0 6px}
-    .item-msg{margin:0; color:var(--muted); line-height:1.55}
-    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace; color:#cbd5e1}
-    .footer{margin-top:14px; color:var(--muted); font-size:12px; line-height:1.6}
-    .warn{border-left:3px solid var(--yellow); padding-left:10px; margin:8px 0; color:var(--muted)}
-    .err{border-left:3px solid var(--red); padding-left:10px; margin:8px 0; color:var(--muted)}
-    .ok{border-left:3px solid var(--green); padding-left:10px; margin:8px 0; color:var(--muted)}
+    .g{background:var(--green)}
+    .y{background:var(--yellow)}
+    .r{background:var(--red)}
+
+    details{border:1px solid var(--line); border-radius:12px; padding:12px; background:rgba(13,20,32,.6)}
+    summary{cursor:pointer; user-select:none; font-weight:800}
+    summary::-webkit-details-marker{display:none}
+
+    .counter{font-size:12px; color:var(--muted)}
+
+    .result{display:none}
+    .resultTop{display:flex; gap:12px; flex-wrap:wrap; align-items:center}
+    .badge{display:inline-flex; align-items:center; gap:8px; border-radius:999px; padding:6px 10px; font-size:12px; font-weight:900; border:1px solid var(--line); background:#0d1420}
+    .bGreen{border-color:rgba(34,197,94,.35)}
+    .bYellow{border-color:rgba(245,158,11,.35)}
+    .bRed{border-color:rgba(239,68,68,.35)}
+
+    .grid{display:grid; grid-template-columns:1fr; gap:12px}
+    @media (min-width:900px){ .grid{grid-template-columns:1fr 1fr} }
+
+    .sectionTitle{font-weight:900; margin:0 0 8px}
+    ul{margin:0; padding-left:18px}
+    li{margin:6px 0}
+
+    .kpi{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:10px}
+    .kpi .pill{color:var(--text); background:rgba(13,20,32,.55)}
+    .hr{height:1px; background:var(--line); margin:14px 0}
+
+    .footnote{color:var(--muted); font-size:12px; margin-top:10px}
+    .muted{color:var(--muted)}
+
+    .legend{display:flex; gap:12px; flex-wrap:wrap; align-items:flex-start}
+    .legendItem{border:1px solid var(--line); border-radius:12px; padding:8px 10px; background:rgba(13,20,32,.55); min-width:220px}
+    .legendTop{font-size:12px; font-weight:900}
+    .legendSub{font-size:12px; color:var(--muted); margin-top:4px; line-height:1.4}
   </style>
 </head>
 <body>
   <div class="wrap">
-    <h1>구조 점검 도구 (공통 + 카테고리)</h1>
-    <p class="sub">
-      이 도구는 글의 “정답/오답”을 판정하지 않습니다. 대신 선택한 카테고리의 <b>판단자가 어디에서 멈추거나 오해할 가능성이 높은지</b>를
-      <b>구조 신호</b>로 보여줍니다. 최종 판단과 수정은 작성자가 합니다.
-    </p>
+    <h1>Comms Checker</h1>
+    <p class="sub">카테고리(판단 관점) 기준으로 커뮤니케이션 문장을 점검합니다. 결과는 ‘정답/오답’이 아니라, 판단자가 어디에서 멈추거나 오해할 가능성이 높은지에 대한 신호입니다.</p>
 
-    <div class="card">
+    <section class="card" aria-label="안내">
+      <div class="sectionTitle">안내</div>
+      <p class="muted" style="margin:0 0 12px">
+        이 툴은 문장을 수정하거나 대신 작성하지 않습니다. 입력된 문장을 체크리스트 방식으로 점검합니다. 최종 판단과 수정은 작성자의 몫입니다.
+      </p>
+
       <details>
         <summary>사용 방법 (접기/더보기)</summary>
-        <div class="warn">
-          • 1회 점검 단위는 <b>최대 1,200자</b>입니다. 긴 문서는 핵심 단락/섹션 단위로 나눠 점검하세요.<br/>
-          • 결과는 “평가”가 아니라 <b>판단 리스크 신호</b>입니다. (🟢 낮음 / 🟡 해석 편차 가능 / 🔴 판단 지연·오해 가능)
-        </div>
-        <ol style="margin:10px 0 0 18px; color:var(--muted); line-height:1.6;">
+        <ol class="muted" style="margin:10px 0 0; padding-left:18px; line-height:1.7">
           <li>상단에서 카테고리를 선택합니다.</li>
-          <li>중간 입력창에 점검할 글(최대 1,200자)을 붙여넣습니다.</li>
-          <li><b>점검하기</b>를 누르면 하단에 공통 체크 + 카테고리 체크 결과가 표시됩니다.</li>
-          <li>🔴/🟡 항목은 “수정 지시”가 아니라, <b>판단이 지연될 수 있는 구조</b>를 의미합니다.</li>
+          <li>점검할 글(최대 1,200자)을 입력합니다.</li>
+          <li>점검하기를 누르면 하단에 <b>공통 점검</b>과 <b>카테고리 점검</b> 결과가 나옵니다.</li>
         </ol>
       </details>
-    </div>
 
-    <div class="card">
-      <div class="row" style="justify-content:space-between;">
-        <div>
-          <label for="category">카테고리 선택</label><br/>
+      <div style="margin-top:14px">
+        <label for="category">카테고리 선택 (판단 관점)</label>
+        <div class="meta" style="margin-top:6px">
           <select id="category">
-            <option value="internal_notice">내부 안내(공지)</option>
-            <option value="work_report">업무 보고(상사/결재)</option>
-            <option value="c_level">C-level 메시지</option>
-            <option value="press_release">보도자료(Press Release)</option>
-            <option value="sns">SNS 글</option>
+            <option value="press_release">Press Release (외부/기자)</option>
+            <option value="c_level">C-level 메시지 (리더/조직)</option>
+            <option value="internal_notice">내부 안내 (구성원/실무자)</option>
+            <option value="work_report">업무 보고 (상사/의사결정자)</option>
+            <option value="sns">SNS 글 (대중/팔로워)</option>
           </select>
-          <div class="hint">카테고리는 “누가 읽는지(판단자 관점)”를 고정하기 위한 선택입니다.</div>
+
+          <div class="legend" aria-label="판단 리스크 신호">
+            <div class="legendItem">
+              <div class="legendTop">🟢 의미가 비교적 명확함</div>
+              <div class="legendSub">(오해의 여지가 적고 쉽게 이해됨)</div>
+            </div>
+            <div class="legendItem">
+              <div class="legendTop">🟡 오해의 여지 있음</div>
+              <div class="legendSub">(읽는 사람에 따라 해석이 달라질 수 있음)</div>
+            </div>
+            <div class="legendItem">
+              <div class="legendTop">🔴 오해 가능성 큼</div>
+              <div class="legendSub">(맥락·근거 보완이 필요함)</div>
+            </div>
+          </div>
         </div>
-        <div class="legend">
-          <span class="pill"><span class="dot g"></span>🟢 판단 리스크 낮음</span>
-          <span class="pill"><span class="dot y"></span>🟡 해석 편차 가능</span>
-          <span class="pill"><span class="dot r"></span>🔴 판단 지연·오해 가능</span>
+        <div class="hint" id="categoryHint"></div>
+        <div class="hint" style="margin-top:8px">
+          선택한 카테고리의 판단자에게 오해의 여지가 있거나 판단의 어려움을 겪을 가능성이 있는지를 보여주는 신호입니다.
         </div>
       </div>
-    </div>
+    </section>
 
-    <div class="card">
-      <div class="section-title">
-        <h2>글 입력</h2>
-        <span class="small">글자 수: <span id="charCount" class="mono">0</span> / 1200</span>
+    <section class="card" aria-label="입력">
+      <div class="sectionTitle">점검할 문장 입력</div>
+      <label for="inputText">텍스트</label>
+      <textarea id="inputText" placeholder="여기에 점검할 문장을 붙여넣으세요."></textarea>
+      <div class="row" style="justify-content:space-between; margin-top:10px">
+        <div class="counter" id="counter">0 / 1200</div>
+        <button id="checkBtn" type="button" onclick="runCheck()">점검하기</button>
       </div>
-      <textarea id="text" placeholder="여기에 점검할 글을 붙여넣으세요. (최대 1,200자)"></textarea>
-      <div class="row" style="margin-top:10px; justify-content:space-between;">
-        <span class="hint">팁: 메일/공지/보고는 “결론(요지) → 근거 → 다음 액션” 순서가 가장 빨리 읽힙니다.</span>
-        <button id="analyzeBtn">점검하기</button>
-      </div>
-      <div id="limitMsg" class="err" style="display:none;"></div>
-    </div>
+      <div class="footnote">권장: 긴 문서는 핵심 문단/섹션 단위로 나눠 점검하세요.</div>
+    </section>
 
-    <div id="results" class="card" style="display:none;">
-      <div class="section-title">
-        <h2>점검 결과</h2>
-        <span class="small" id="resultMeta"></span>
+    <section class="card result" id="resultWrap" aria-label="결과">
+      <div class="sectionTitle">점검 결과</div>
+
+      <div class="resultTop">
+        <span class="badge" id="verdictBadge">-</span>
+        <div class="muted" id="verdictMsg"></div>
       </div>
 
-      <div id="overall" class="ok" style="display:none;"></div>
-      <div id="overallWarn" class="warn" style="display:none;"></div>
-      <div id="overallErr" class="err" style="display:none;"></div>
+      <div class="kpi" id="kpiRow"></div>
 
-      <div class="kpi" id="kpi"></div>
+      <div class="hr"></div>
 
-      <div style="margin-top:14px;">
-        <div class="section-title">
-          <h2>공통 체크</h2>
-          <span class="small">모든 글에 적용되는 구조 신호</span>
+      <div class="grid">
+        <div>
+          <div class="sectionTitle">공통 점검 결과</div>
+          <ul id="commonList"></ul>
         </div>
-        <div class="items" id="commonItems"></div>
-      </div>
-
-      <div style="margin-top:14px;">
-        <div class="section-title">
-          <h2>카테고리 체크</h2>
-          <span class="small" id="catTitle"></span>
+        <div>
+          <div class="sectionTitle">카테고리 점검 결과</div>
+          <ul id="categoryList"></ul>
         </div>
-        <div class="items" id="categoryItems"></div>
       </div>
 
-      <div class="footer">
-        ※ 결과는 “정답 판정”이 아니라, 선택한 카테고리의 판단자가 <b>빠르게 이해/판단하기 어려울 수 있는 구조</b>를 알려주는 신호입니다.<br/>
-        ※ 긴 문서(2,000자 이상)는 섹션 단위로 나누어 점검하는 것을 권장합니다.
-      </div>
-    </div>
+      <div class="hr"></div>
+      <div class="footnote">이 결과는 규칙 기반 점검입니다. 최종 판단과 수정은 작성자의 몫입니다.</div>
+    </section>
+
   </div>
 
-<script>
-/** -----------------------------
- *  Utilities
- * ----------------------------- */
-const MAX_CHARS = 1200;
+  <script>
+    const MAX_LEN = 1200;
 
-function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+    const categoryMeta = {
+      press_release: {
+        label: "Press Release",
+        hint: "외부 독자/기자 관점에서 기사화 가능성과 오해 소지를 점검합니다."
+      },
+      c_level: {
+        label: "C-level 메시지",
+        hint: "리더의 해석과 방향(기준)이 문장에 드러나는지 점검합니다."
+      },
+      internal_notice: {
+        label: "내부 안내",
+        hint: "구성원이 읽고 바로 이해·행동할 수 있는지 점검합니다."
+      },
+      work_report: {
+        label: "업무 보고",
+        hint: "의사결정에 필요한 정보(결론/근거/요청)가 정리되어 있는지 점검합니다."
+      },
+      sns: {
+        label: "SNS 글",
+        hint: "짧은 문장 안에서 맥락 부족, 단정 표현, 오해 가능성을 점검합니다."
+      }
+    };
 
-function countChars(s){
-  // JS length counts UTF-16 code units; for Korean this is practically ok for UX
-  return (s || "").trim().length;
-}
+    function norm(t){
+      return (t || "").replace(/\r/g, "");
+    }
 
-function normalize(s){
-  return (s || "")
-    .replace(/\r\n/g, "\n")
-    .replace(/[ \t]+/g, " ")
-    .replace(/\n{3,}/g, "\n\n")
-    .trim();
-}
+    function splitLines(t){
+      return norm(t).split("\n").map(s => s.trim()).filter(Boolean);
+    }
 
-function splitParagraphs(s){
-  const t = normalize(s);
-  if(!t) return [];
-  return t.split(/\n{2,}/).map(x => x.trim()).filter(Boolean);
-}
+    function hasAny(t, arr){
+      return arr.some(w => t.includes(w));
+    }
 
-function splitLines(s){
-  const t = normalize(s);
-  if(!t) return [];
-  return t.split(/\n/).map(x => x.trim()).filter(Boolean);
-}
+    function countMatches(t, re){
+      const m = t.match(re);
+      return m ? m.length : 0;
+    }
 
-function splitSentences(s){
-  // Rough sentence splitter for Korean/English mixed text
-  const t = normalize(s);
-  if(!t) return [];
-  // Prefer punctuation boundaries; keep short lines
-  const raw = t
-    .replace(/([.!?])\s+/g, "$1\n")
-    .replace(/(다\.|니다\.|요\.)\s+/g, "$1\n")
-    .split("\n")
-    .map(x => x.trim())
-    .filter(Boolean);
-  return raw;
-}
+    function extractDates(t){
+      const out = [];
+      const re1 = /\b(20\d{2})[.\/-](\d{1,2})[.\/-](\d{1,2})\b/g;
+      const re2 = /(\d{1,2})\s*월\s*(\d{1,2})\s*일/g;
+      let m;
+      while((m = re1.exec(t)) !== null) out.push(m[0]);
+      while((m = re2.exec(t)) !== null) out.push(m[0]);
+      return [...new Set(out)];
+    }
 
-function ratioIndexOfAny(text, tokens){
-  const t = normalize(text);
-  if(!t) return -1;
-  const idx = tokens
-    .map(tok => t.indexOf(tok))
-    .filter(i => i >= 0)
-    .sort((a,b)=>a-b)[0];
-  if(idx === undefined) return -1;
-  return idx / t.length;
-}
+    function extractContacts(t){
+      const emails = [...new Set((t.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi) || []))];
+      const phones = [...new Set((t.match(/\b(\d{2,4}[- ]?\d{3,4}[- ]?\d{4})\b/g) || []))];
+      return { emails, phones };
+    }
 
-function countMatches(text, patterns){
-  const t = normalize(text);
-  if(!t) return 0;
-  let c = 0;
-  for(const p of patterns){
-    const re = (p instanceof RegExp) ? p : new RegExp(p, "g");
-    const m = t.match(re);
-    if(m) c += m.length;
-  }
-  return c;
-}
+    function makeItem(title, level, msg){
+      return { title, level, msg };
+    }
 
-function hasAny(text, tokens){
-  const t = normalize(text);
-  return tokens.some(tok => t.includes(tok));
-}
+    function summarize(items){
+      const g = items.filter(i => i.level === "g").length;
+      const y = items.filter(i => i.level === "y").length;
+      const r = items.filter(i => i.level === "r").length;
+      return { g, y, r, total: items.length };
+    }
 
-function extractDates(text){
-  const t = normalize(text);
-  const re = /(\d{1,2}월\s?\d{1,2}일|\d{4}[./-]\d{1,2}[./-]\d{1,2}|\d{1,2}[./-]\d{1,2}[./-]\d{2,4})/g;
-  return t.match(re) || [];
-}
+    function verdictFrom(allItems){
+      const s = summarize(allItems);
+      // 간단하고 안정적인 규칙
+      if(s.r >= 2) return "RED";
+      if(s.r === 1) return "YELLOW";
+      if(s.y >= 3) return "YELLOW";
+      return "GREEN";
+    }
 
-function extractContacts(text){
-  const t = normalize(text);
-  const emails = t.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/ig) || [];
-  const phones = t.match(/(01[016789]-?\d{3,4}-?\d{4}|\d{2,3}-\d{3,4}-\d{4})/g) || [];
-  return {emails, phones};
-}
+    function commonChecks(text){
+      const t = norm(text);
+      const lines = splitLines(text);
+      const items = [];
 
-function findFirstLineWith(text, tokens){
-  const lines = splitLines(text);
-  for(let i=0;i<lines.length;i++){
-    if(tokens.some(tok => lines[i].includes(tok))) return {i, line: lines[i]};
-  }
-  return null;
-}
+      // 1) 주체/대상
+      const hasSubject = hasAny(t, ["우리", "당사", "회사", "팀", "조직", "본사", "고객", "구성원", "여러분", "~님"]);
+      items.push(makeItem(
+        "주체/대상이 명확한가",
+        hasSubject ? "g" : "y",
+        hasSubject ? "주체/대상 단서가 있습니다." : "누가 말하고, 누가 대상인지가 흐릿할 수 있습니다. 주체/대상을 1번만이라도 명시하세요."
+      ));
 
-function makeStatus(level){
-  // level: "g" | "y" | "r"
-  if(level==="g") return {badge:"🟢 판단 리스크 낮음", cls:"g"};
-  if(level==="y") return {badge:"🟡 해석 편차 가능", cls:"y"};
-  return {badge:"🔴 판단 지연·오해 가능", cls:"r"};
-}
+      // 2) 사실/해석 구분
+      const hasNums = /\d/.test(t);
+      const hasFactWords = hasAny(t, ["발표", "진행", "개최", "체결", "오픈", "입고", "변경", "도입", "확인", "일정"]);
+      const hasInterpret = hasAny(t, ["의미", "강화", "시너지", "혁신", "가치", "선도", "차별화"]);
+      let level = "g";
+      if(hasInterpret && !hasFactWords && !hasNums) level = "r";
+      else if(hasInterpret) level = "y";
+      items.push(makeItem(
+        "사실과 해석이 분리되는가",
+        level,
+        level === "g" ? "사실 단서가 있거나, 과도한 해석 표현이 두드러지지 않습니다." :
+        (level === "y" ? "해석 표현이 섞여 있습니다. 사실(언제/무엇을/누가)을 먼저 두고, 해석은 뒤로 분리하면 안정적입니다." :
+         "해석/평가 표현만 두드러집니다. 사실/근거를 먼저 제시하지 않으면 판단자가 멈출 가능성이 큽니다.")
+      ));
 
-function renderItem(container, title, level, message){
-  const st = makeStatus(level);
-  const div = document.createElement("div");
-  div.className = "item";
-  div.innerHTML = `
-    <div class="item-head">
-      <div class="item-left">
-        <span class="badge ${st.cls}"><span class="dot ${st.cls}"></span>${st.badge}</span>
-        <div>
-          <div class="item-title">${title}</div>
-          <p class="item-msg">${message}</p>
-        </div>
-      </div>
-    </div>
-  `;
-  container.appendChild(div);
-}
+      // 3) 장황함(분량/문단)
+      const tooLong = t.length > 900 || lines.length >= 7;
+      const midLong = t.length > 650 || lines.length >= 5;
+      items.push(makeItem(
+        "핵심이 앞에서 잡히는가(장황함)",
+        tooLong ? "r" : (midLong ? "y" : "g"),
+        tooLong ? "긴 문서로 인식될 수 있습니다. 핵심 결론/요청을 1~2문장으로 앞에 고정하고 문단을 쪼개세요." :
+        (midLong ? "핵심이 분산될 수 있습니다. ‘결론 1줄 → 근거’ 순서로 압축하면 좋습니다." :
+         "길이/문단 수가 과도하지 않습니다.")
+      ));
 
-/** -----------------------------
- *  Core Checks (Common)
- * ----------------------------- */
-const PURPOSE_CUES = ["안내", "공지", "공유", "요청", "보고", "결정", "확인 부탁", "협조", "감사", "참고"];
-const CONCLUSION_CUES = ["요청드립니다", "부탁드립니다", "확인 부탁", "결정", "진행하겠습니다", "진행 예정", "안내드립니다", "공유드립니다", "참고 부탁", "회신 부탁", "신청 부탁", "제출 부탁"];
-const CONNECTORS = ["그리고", "또한", "다만", "하지만", "이에", "이에 따라", "따라서", "그러나", "한편", "아울러", "즉", "즉,", "그러므로", "또는", "반면"];
-const ABSTRACT_WORDS = ["전반", "다양", "효과", "의미", "최적", "강화", "개선", "확대", "추진", "전개", "체계", "전략", "방향"];
-const EXAGGERATIONS = ["최고", "최초", "유일", "압도", "혁신", "선도", "완벽", "필수", "반드시", "획기적"];
+      // 4) 연결어(논리 흐름)
+      const hasConnect = hasAny(t, ["따라서","그러나","하지만","또한","특히","한편","때문에","반면","이에 따라"]);
+      items.push(makeItem(
+        "문단/문장 연결이 드러나는가",
+        (!hasConnect && lines.length >= 4) ? "y" : "g",
+        (!hasConnect && lines.length >= 4)
+          ? "문단 사이 논리 관계가 숨을 수 있습니다. 연결어로 ‘왜 이 문장이 다음 문장으로 가는지’를 드러내세요."
+          : "연결 흐름 단서가 있습니다."
+      ));
 
-function commonChecks(text){
-  const t = normalize(text);
-  const chars = t.length;
-  const paragraphs = splitParagraphs(t);
-  const sentences = splitSentences(t);
-  const lines = splitLines(t);
+      // 5) 근거/출처/수치(필요 시)
+      const hasEvidence = /(\d+(\.\d+)?%|\d{1,3}(,\d{3})+|\d+명|\d+건|\d+회|\d+원)/.test(t) || hasAny(t, ["근거","데이터","수치","출처","참고","링크"]);
+      items.push(makeItem(
+        "근거 단서(수치/사실/링크)가 있는가",
+        hasEvidence ? "g" : "y",
+        hasEvidence ? "근거 단서가 있습니다." : "근거 단서가 약합니다. 필요한 경우 수치/일정/링크 중 1개만이라도 붙이면 설득력이 안정됩니다."
+      ));
 
-  const results = [];
+      return items;
+    }
 
-  // 1) 글자 수
-  if(chars === 0){
-    results.push({title:"입력 여부", level:"r", msg:"텍스트가 비어 있습니다. 점검할 글을 입력해 주세요."});
-    return results;
-  }
-  if(chars > MAX_CHARS){
-    results.push({title:"글자 수 제한", level:"r", msg:`현재 ${chars}자입니다. 이 도구는 1회 점검 단위를 최대 1,200자로 가정합니다. 핵심 단락/섹션으로 나누어 점검해 주세요.`});
-  } else {
-    results.push({title:"글자 수 제한", level:"g", msg:`${chars}자. 1회 점검 단위(≤ 1,200자)로 적절합니다.`});
-  }
+    function categoryChecks(category, text){
+      const t = norm(text);
+      const lines = splitLines(text);
+      const items = [];
 
-  // 2) 문단 분리
-  if(paragraphs.length <= 1){
-    results.push({title:"문단 분리", level:"y", msg:"문단 구분이 약합니다. 줄바꿈(빈 줄)을 넣어 단락을 2~5개로 나누면 판단 동선이 빨라집니다."});
-  } else if(paragraphs.length >= 7){
-    results.push({title:"문단 분리", level:"y", msg:`문단이 ${paragraphs.length}개로 많습니다. 요지/근거/액션 중심으로 묶어 단락 수를 줄이면 읽는 피로가 감소합니다.`});
-  } else {
-    results.push({title:"문단 분리", level:"g", msg:`문단 ${paragraphs.length}개. 읽기 동선이 비교적 안정적입니다.`});
-  }
+      if(category === "internal_notice"){
+        const hasPurpose = hasAny(t, ["안내드립니다","공지드립니다","공유드립니다","아래와 같이","다음 사항"]) || hasAny(lines[0] || "", ["안내","공지","[안내]","[공지]"]);
+        items.push(makeItem(
+          "용건(첫 화면) 명시",
+          hasPurpose ? "g" : "y",
+          hasPurpose ? "용건을 알리는 표현이 감지됩니다." : "첫 문단에서 용건이 뚜렷하지 않습니다. ‘무엇을 안내하는지’를 1문장으로 먼저 제시하세요."
+        ));
 
-  // 3) 첫 20% 요지 단서
-  const purposePos = ratioIndexOfAny(t, PURPOSE_CUES);
-  if(purposePos < 0){
-    results.push({title:"요지 단서(초반)", level:"y", msg:"첫 구간에 글의 성격(안내/요청/공유/보고 등)이 드러나지 않습니다. 첫 문단에 목적 한 줄을 추가하면 판단이 빨라집니다."});
-  } else if(purposePos <= 0.20){
-    results.push({title:"요지 단서(초반)", level:"g", msg:"초반에 글의 성격 단서가 등장합니다. 독자가 ‘무슨 글인지’ 빠르게 잡을 가능성이 높습니다."});
-  } else {
-    results.push({title:"요지 단서(초반)", level:"y", msg:"요지 단서가 비교적 뒤에 등장합니다. 첫 문단에서 글의 성격(안내/요청/공유/보고)을 먼저 제시하면 재독 가능성이 줄어듭니다."});
-  }
+        const hasTarget = hasAny(t, ["전 직원","전사","해당 부서","대상","각 팀","전 구성원"]);
+        items.push(makeItem(
+          "대상/범위",
+          hasTarget ? "g" : "y",
+          hasTarget ? "대상/범위 단서가 보입니다." : "누가 적용 대상인지가 흐릿합니다. ‘대상/범위’를 1줄로 분리하세요."
+        ));
 
-  // 4) 결론/요청 위치
-  const conclPos = ratioIndexOfAny(t, CONCLUSION_CUES);
-  if(conclPos < 0){
-    results.push({title:"결론/요청 위치", level:"y", msg:"결론/요청을 암시하는 문장이 뚜렷하지 않습니다. (예: ‘확인 부탁/요청드립니다/진행 예정’ 등) 독자가 행동을 추정해야 할 수 있습니다."});
-  } else if(conclPos <= 0.55){
-    results.push({title:"결론/요청 위치", level:"g", msg:"결론/요청이 문서 중반 이전에 등장합니다. 판단 동선이 안정적일 가능성이 높습니다."});
-  } else {
-    results.push({title:"결론/요청 위치", level:"y", msg:"결론/요청이 후반에 몰려 있습니다. 핵심 결론(또는 요청)을 상단(첫 3~5줄)으로 끌어올리면 판단이 빨라집니다."});
-  }
+        const hasSteps = hasAny(t, ["신청","작성","제출","확인","다운로드","참여"]) && hasAny(t, ["방법","경로","절차","→","1.","2.","•","- "]);
+        items.push(makeItem(
+          "행동/절차(무엇을 어떻게)",
+          hasSteps ? "g" : "y",
+          hasSteps ? "절차/경로 신호(번호/불릿/경로)가 보입니다." : "행동/절차가 문장 속에 묻힐 수 있습니다. ‘경로/방법’을 번호나 불릿으로 분리하세요."
+        ));
 
-  // 5) 핵심 문장 후보(1문장 요약 가능성)
-  const keyLine = findFirstLineWith(t, ["요약", "핵심", "결론", "정리", "요청", "안내", "공유", "보고"]);
-  if(keyLine){
-    results.push({title:"핵심 문장(요약 가능성)", level:"g", msg:`핵심을 잡을 수 있는 문장이 감지됩니다. (예: “${keyLine.line.slice(0,60)}${keyLine.line.length>60?"…":""}”)`});
-  } else {
-    results.push({title:"핵심 문장(요약 가능성)", level:"y", msg:"한 문장으로 요지를 잡을 ‘앵커 문장’이 약합니다. 첫 문단에 목적/결론을 1문장으로 추가하면 전체가 정리됩니다."});
-  }
+        const dates = extractDates(t);
+        const hasDeadline = dates.length > 0 || hasAny(t, ["까지","마감","기한","기간"]);
+        items.push(makeItem(
+          "기한/시점",
+          hasDeadline ? "g" : "y",
+          hasDeadline ? "기한/시점 단서가 보입니다." : "기한/시점 단서가 약합니다. 필요한 경우 ‘언제까지/언제부터’를 명시하세요."
+        ));
 
-  // 6) 긴 문장 연속 신호
-  const longSentences = sentences.filter(s => s.length >= 80);
-  if(longSentences.length >= 3){
-    results.push({title:"긴 문장(가독성)", level:"y", msg:`긴 문장이 ${longSentences.length}개 감지됩니다. 한 문장에 메시지가 2개 이상 중첩될 가능성이 있습니다. 문장을 분할하면 이해 속도가 개선됩니다.`});
-  } else if(longSentences.length >= 1){
-    results.push({title:"긴 문장(가독성)", level:"y", msg:"긴 문장이 일부 감지됩니다. 핵심 문장은 짧게, 근거는 문단으로 분리하면 읽기 부담이 줄어듭니다."});
-  } else {
-    results.push({title:"긴 문장(가독성)", level:"g", msg:"문장 길이가 과도하게 길지 않습니다. 가독성 리스크가 낮습니다."});
-  }
+        const hasException = hasAny(t, ["단,","다만","유의","주의","※","참고:","예외"]);
+        items.push(makeItem(
+          "주의/예외(필요 시) 분리",
+          hasException ? "g" : "y",
+          hasException ? "주의/예외 신호가 있습니다." : "주의/예외가 필요한 글이라면, ‘단/유의사항’을 별도 라인으로 분리하세요."
+        ));
 
-  // 7) 접속사 과다(전개 피로)
-  const connCount = countMatches(t, CONNECTORS.map(w => new RegExp(w, "g")));
-  const connPer1000 = (connCount / Math.max(chars,1)) * 1000;
-  if(connPer1000 >= 18){
-    results.push({title:"접속사 밀도(전개 피로)", level:"y", msg:"접속사가 잦습니다. 문장 연결을 접속사로 해결하기보다 문단 구조(요지→근거→액션)로 정리하면 전개가 깔끔해집니다."});
-  } else if(connPer1000 >= 10){
-    results.push({title:"접속사 밀도(전개 피로)", level:"y", msg:"접속사 사용이 다소 많습니다. 같은 역할의 접속사는 일부 생략해도 의미가 유지됩니다."});
-  } else {
-    results.push({title:"접속사 밀도(전개 피로)", level:"g", msg:"접속사 밀도가 과도하지 않습니다."});
-  }
+        const c = extractContacts(t);
+        const hasContact = hasAny(t, ["문의","담당"]) || c.emails.length > 0 || c.phones.length > 0;
+        items.push(makeItem(
+          "문의 경로",
+          hasContact ? "g" : "y",
+          hasContact ? "문의/담당 단서가 있습니다." : "문의 경로가 없으면 질문이 늘 수 있습니다. 필요 시 ‘문의: 담당/메일’ 1줄을 추가하세요."
+        ));
+      }
 
-  // 8) 추상어 밀도
-  const absCount = countMatches(t, ABSTRACT_WORDS.map(w => new RegExp(w, "g")));
-  const absPer1000 = (absCount / Math.max(chars,1)) * 1000;
-  if(absPer1000 >= 14){
-    results.push({title:"추상어 밀도(해석 편차)", level:"y", msg:"추상어 비중이 높습니다. (전반/강화/개선/전략 등) 핵심 문장에는 ‘누가/무엇을/언제’ 같은 구체 요소를 붙이면 해석 편차가 줄어듭니다."});
-  } else {
-    results.push({title:"추상어 밀도(해석 편차)", level:"g", msg:"추상어 밀도가 과도하지 않습니다."});
-  }
+      if(category === "work_report"){
+        const head = lines[0] || "";
+        const hasTag = /^\s*\[(공유|요청|결정|보고)\]/.test(head) || hasAny(head, ["공유","요청","결정","보고"]);
+        items.push(makeItem(
+          "보고 유형(공유/요청/결정) 명시",
+          hasTag ? "g" : "y",
+          hasTag ? "보고 성격 단서가 초반에 보입니다." : "초반에 보고 성격이 불명확합니다. 제목/첫줄에 [공유]/[요청]/[결정] 형태로 고정해 보세요."
+        ));
 
-  // 9) 전제-결론 점프 신호(경향)
-  // heuristic: conclusion cue exists but because/근거 단서 부족
-  const hasConcl = conclPos >= 0;
-  const hasReasonCue = hasAny(t, ["왜냐하면", "때문에", "근거", "현황", "배경", "상황", "이에 따라", "로 인해", "따라"]);
-  if(hasConcl && !hasReasonCue && chars >= 400){
-    results.push({title:"전제-결론 연결(점프 신호)", level:"y", msg:"결론/요청은 있으나, 그 근거/배경 단서가 약합니다. 독자가 ‘왜 지금 이 결론인가’를 추정해야 할 수 있습니다."});
-  } else {
-    results.push({title:"전제-결론 연결(점프 신호)", level:"g", msg:"결론/요청과 배경 단서의 연결 신호가 크게 불안정하지 않습니다."});
-  }
+        const firstBlock = lines.slice(0,5).join(" ");
+        const hasAskOrConcl = hasAny(firstBlock, ["요청","확인 부탁","결정","공유","보고드립니다","결재","검토 부탁","승인"]);
+        items.push(makeItem(
+          "결론/요청 선배치(초반)",
+          hasAskOrConcl ? "g" : "y",
+          hasAskOrConcl ? "초반에 결론/요청 단서가 있습니다." : "결론/요청이 초반에 보이지 않습니다. ‘결론 1줄 → 근거’ 순으로 재배치하세요."
+        ));
 
-  // 10) 행동 가능성(누가/무엇을/언제/어디서 중 2개 이상)
-  const who = hasAny(t, ["대상", "전 직원", "전사", "모든", "해당", "담당", "각 부서", "팀", "부서"]);
-  const what = hasAny(t, ["신청", "제출", "확인", "참여", "공유", "회신", "검토", "진행", "업로드", "작성"]);
-  const when = extractDates(t).length > 0 || hasAny(t, ["오늘", "내일", "금주", "이번 주", "이번달", "까지", "마감"]);
-  const where = hasAny(t, ["링크", "첨부", "그룹웨어", "포털", "메일", "페이지", "폼", "양식"]);
-  const cnt = [who,what,when,where].filter(Boolean).length;
+        const hasEvidence = /(\d+(\.\d+)?%|\d{1,3}(,\d{3})+|\d+명|\d+건|\d+회|\d+원)/.test(t) || hasAny(t, ["현황","근거","데이터","수치","일정","비용"]);
+        items.push(makeItem(
+          "근거/현황(최소 단서)",
+          hasEvidence ? "g" : "y",
+          hasEvidence ? "근거/현황 단서가 있습니다." : "결론을 뒷받침하는 근거 단서가 약합니다. 수치/일정/현황 중 1개라도 붙이면 판단이 빨라집니다."
+        ));
 
-  if(cnt >= 2){
-    results.push({title:"행동 가능성(명확성)", level:"g", msg:"행동에 필요한 단서(누가/무엇을/언제/어디서)가 최소 2개 이상 드러납니다."});
-  } else {
-    results.push({title:"행동 가능성(명확성)", level:"y", msg:"행동 단서가 부족합니다. 대상(누가) + 행동(무엇) 또는 기한(언제) 중 최소 2가지를 명시하면 질문 발생 가능성이 줄어듭니다."});
-  }
+        const hasOptions = hasAny(t, ["옵션","안","대안","선택지","A안","B안"]) || countMatches(t, /\b(1\)|2\)|3\)|①|②|③)\b/g) >= 2;
+        items.push(makeItem(
+          "결정 포인트(옵션/요청) 분리",
+          hasOptions || hasAny(t,["결정","확정","승인","의견"]) ? "g" : "y",
+          (hasOptions || hasAny(t,["결정","확정","승인","의견"])) ? "결정/요청 단서가 있습니다." : "결정해야 할 포인트가 문장 속에 묻힐 수 있습니다. ‘결정 요청 1줄’을 분리하세요."
+        ));
 
-  return results;
-}
+        const hasRisk = hasAny(t, ["리스크","이슈","우려","문제","가능성","법","규정","컴플라이언스"]);
+        items.push(makeItem(
+          "리스크/주의사항 노출",
+          hasRisk ? "g" : "y",
+          hasRisk ? "리스크/주의 단서가 보입니다." : "리스크/주의사항이 없다면 괜찮지만, 존재한다면 1줄로 먼저 노출해 결재자를 안전하게 만드세요."
+        ));
+      }
 
-/** -----------------------------
- *  Category Checks
- * ----------------------------- */
-const CATEGORY_META = {
-  internal_notice: {name:"내부 안내(공지)", judge:"구성원/실무자"},
-  work_report: {name:"업무 보고(상사/결재)", judge:"의사결정자/결재권자"},
-  c_level: {name:"C-level 메시지", judge:"조직 구성원/외부 이해관계자"},
-  press_release: {name:"보도자료(Press Release)", judge:"기자/외부 독자"},
-  sns: {name:"SNS 글", judge:"대중/팔로워"}
-};
+      if(category === "c_level"){
+        const hasFrame = hasAny(t, ["환경","변화","전환","불확실","시장","고객","AI","규제","리스크","기회","구조"]);
+        items.push(makeItem(
+          "상황 해석(맥락) 제시",
+          hasFrame ? "g" : "y",
+          hasFrame ? "맥락 단서가 있습니다." : "상황 해석이 약하면 메시지가 ‘의견’으로 들릴 수 있습니다. 변화/리스크/기회를 1문장으로 고정하세요."
+        ));
 
-function categoryChecks(text, category){
-  const t = normalize(text);
-  const chars = t.length;
-  const lines = splitLines(t);
-  const sentences = splitSentences(t);
-  const results = [];
+        const hasRole = hasAny(t, ["역할","방향","원칙","기준","우리는","조직","팀","책임","정의"]);
+        items.push(makeItem(
+          "조직의 역할/방향 고정",
+          hasRole ? "g" : "y",
+          hasRole ? "역할/방향 단서가 보입니다." : "조직의 역할/방향이 드러나지 않으면 메시지가 분산됩니다. ‘우리는 무엇을 기준으로 움직인다’를 1문장으로 넣으세요."
+        ));
 
-  if(category === "internal_notice"){
-    // 1) 용건 1줄
-    const hasPurpose = hasAny(t, ["안내드립니다", "공지드립니다", "공유드립니다", "다음 사항", "아래와 같이"]);
-    results.push({
-      title:"용건(첫 화면) 명시",
-      level: hasPurpose ? "g" : "y",
-      msg: hasPurpose
-        ? "용건을 알리는 표현이 감지됩니다. 구성원이 ‘무슨 안내인지’ 잡기 쉬울 가능성이 높습니다."
-        : "첫 문단에서 용건이 뚜렷하지 않습니다. ‘무엇을 안내하는지’를 1문장으로 먼저 제시하면 문의가 줄어듭니다."
-    });
+        const hasDirective = hasAny(t, ["지시","반드시","즉시","해라","해야 한다","필수"]);
+        items.push(makeItem(
+          "지시형 표현 과다 여부",
+          hasDirective ? "y" : "g",
+          hasDirective ? "지시형 표현이 섞여 있습니다. ‘실행 지시’보다 ‘방향/기준 고정’ 언어로 치환하면 C레벨 톤이 선명해집니다." : "지시형 표현이 과도하지 않습니다."
+        ));
 
-    // 2) 대상/범위
-    const hasTarget = hasAny(t, ["전 직원", "전사", "해당 부서", "대상", "각 팀", "전 구성원"]);
-    results.push({
-      title:"대상/범위",
-      level: hasTarget ? "g" : "y",
-      msg: hasTarget ? "대상/범위 단서가 보입니다." : "누가 적용 대상인지가 흐릿합니다. ‘대상/범위’를 1줄로 분리해 주세요."
-    });
+        const vagueCount = countMatches(t, /(의미|강화|시너지|확대|고도화|최적화|혁신|선도|차별화|가치)/g);
+        items.push(makeItem(
+          "추상어(의미/강화/시너지 등) 밀도",
+          vagueCount >= 3 ? "r" : (vagueCount >= 1 ? "y" : "g"),
+          vagueCount >= 3 ? "추상어 밀도가 높습니다. 판단 기준이 흐려질 수 있으니, 1개만 남기고 근거/사례로 치환하세요." :
+          (vagueCount >= 1 ? "추상어가 일부 보입니다. 근거(사실/사례)와 붙여 쓰면 안정됩니다." : "추상어 밀도가 낮습니다.")
+        ));
 
-    // 3) 행동/절차(무엇을 어떻게)
-    const hasSteps = hasAny(t, ["신청", "작성", "제출", "확인", "다운로드", "참여"]) && (hasAny(t, ["방법", "경로", "절차", "→", "1.", "2.", "•"]));
-    results.push({
-      title:"행동/절차(무엇을 어떻게)",
-      level: hasSteps ? "g" : "y",
-      msg: hasSteps ? "절차/경로 신호(번호/불릿/경로)가 보입니다." : "행동/절차가 문장 속에 묻힐 수 있습니다. ‘경로/방법’을 번호나 불릿으로 분리하면 실행이 빨라집니다."
-    });
+        const hasClosure = hasAny(t, ["이 기준으로","이를 바탕으로","앞으로도","향후","우리는 계속"]);
+        items.push(makeItem(
+          "결론(기준/의미)의 마무리",
+          hasClosure ? "g" : "y",
+          hasClosure ? "마무리 결론 단서가 있습니다." : "마무리에서 ‘무엇을 기준으로 이어갈지’ 1문장을 넣으면 메시지가 고정됩니다."
+        ));
+      }
 
-    // 4) 기한/시점
-    const dates = extractDates(t);
-    const hasDeadline = dates.length > 0 || hasAny(t, ["까지", "마감", "기한", "기간"]);
-    results.push({
-      title:"기한/시점",
-      level: hasDeadline ? "g" : "y",
-      msg: hasDeadline ? "기한/시점 단서가 보입니다." : "기한/시점 단서가 약합니다. 필요한 경우 ‘언제까지/언제부터’를 명시하면 혼선이 줄어듭니다."
-    });
+      if(category === "press_release"){
+        const whyNow = hasAny(t, ["오늘","이번","최근","앞두고","발표","개최","착수","출시","오픈","체결","진행"]);
+        items.push(makeItem(
+          "Why now(왜 지금인가)",
+          whyNow ? "g" : "y",
+          whyNow ? "시점/계기 단서가 보입니다." : "Why now가 약합니다. 발표/행사/도입 등 ‘지금의 계기’를 1문장으로 명시하세요."
+        ));
 
-    // 5) 예외/주의 분리
-    const hasException = hasAny(t, ["단,", "다만", "유의", "주의", "※", "참고:", "예외"]);
-    results.push({
-      title:"예외/주의(필요 시) 분리",
-      level: hasException ? "g" : "y",
-      msg: hasException ? "주의/예외 신호가 분리되어 있을 가능성이 있습니다." : "주의/예외가 필요한 글이라면, ‘단/유의사항’을 별도 라인으로 분리해 주세요."
-    });
+        const hasWhoWhat = hasAny(t, ["맨파워","당사","회사","협회","기관","고객","파트너"]) && hasAny(t, ["발표","진행","개최","체결","오픈","선정","수상"]);
+        items.push(makeItem(
+          "누가/무엇을 했는가(기사 뼈대)",
+          hasWhoWhat ? "g" : "y",
+          hasWhoWhat ? "기사 뼈대 단서가 있습니다." : "누가 무엇을 했는지 뼈대가 흐릿합니다. ‘주체-행동-대상’을 첫 문단에 고정하세요."
+        ));
 
-    // 6) 문의처
-    const c = extractContacts(t);
-    const hasContact = hasAny(t, ["문의", "담당"]) || c.emails.length>0 || c.phones.length>0;
-    results.push({
-      title:"문의 경로",
-      level: hasContact ? "g" : "y",
-      msg: hasContact ? "문의/담당 단서가 있습니다." : "문의 경로가 없으면 추가 질문이 늘 수 있습니다. 필요 시 ‘문의: 담당/메일’ 1줄을 추가하세요."
-    });
-  }
+        const hasEvidence = /(\d+(\.\d+)?%|\d{1,3}(,\d{3})+|\d+명|\d+건|\d+회|\d+원)/.test(t) || extractDates(t).length > 0;
+        items.push(makeItem(
+          "근거(수치/일정) 포함",
+          hasEvidence ? "g" : "y",
+          hasEvidence ? "근거 단서(수치/일정)가 있습니다." : "근거 단서가 약합니다. 날짜/규모/횟수 중 1개라도 넣으면 기사화가 쉬워집니다."
+        ));
 
-  if(category === "work_report"){
-    // 1) 보고 유형 태그
-    const head = (lines[0] || "");
-    const hasTag = /^\s*\[(공유|요청|결정|보고)\]/.test(head) || hasAny(head, ["공유", "요청", "결정", "보고"]);
-    results.push({
-      title:"보고 유형(공유/요청/결정) 명시",
-      level: hasTag ? "g" : "y",
-      msg: hasTag ? "보고 성격 단서가 초반에 보입니다." : "초반에 보고 성격이 불명확합니다. 제목/첫줄에 [공유]/[요청]/[결정] 형태로 고정하면 판단이 빨라집니다."
-    });
+        const hasVaguePromo = countMatches(t, /(의미|강화|시너지|혁신|선도|차별화|가치)/g) >= 2;
+        items.push(makeItem(
+          "홍보성 추상 표현 과다 여부",
+          hasVaguePromo ? "y" : "g",
+          hasVaguePromo ? "추상 홍보 표현이 겹칠 수 있습니다. 1개만 남기고 근거/맥락으로 치환하세요." : "추상 홍보 표현이 과도하지 않습니다."
+        ));
 
-    // 2) 결론 선배치(첫 3~5줄)
-    const firstBlock = lines.slice(0,5).join(" ");
-    const hasAskOrConcl = hasAny(firstBlock, ["요청", "확인 부탁", "결정", "공유", "드리며", "보고드립니다", "결재", "검토 부탁"]);
-    results.push({
-      title:"결론/요청 선배치(초반)",
-      level: hasAskOrConcl ? "g" : "y",
-      msg: hasAskOrConcl ? "초반에 결론/요청 단서가 있습니다." : "결론/요청이 초반에 보이지 않습니다. ‘결론 1줄 → 근거’ 순으로 재배치하면 결재 시간이 줄어듭니다."
-    });
+        const hasQuote = /“|”|\"/.test(t) || hasAny(t, ["말했다","밝혔다","설명했다",""" ]);
+        items.push(makeItem(
+          "인용/발언(필요 시)",
+          hasQuote ? "g" : "y",
+          hasQuote ? "인용/발언 단서가 보입니다." : "기자 관점에서 ‘의미’를 잡아줄 인용이 필요한 유형이라면 1개만 추가해도 기사 완성도가 올라갑니다."
+        ));
+      }
 
-    // 3) 근거/현황(최소 1개)
-    const hasEvidence = /(\d+(\.\d+)?%|\d{1,3}(,\d{3})+|\d+명|\d+건|\d+회|\d+원)/.test(t) || hasAny(t, ["현황", "근거", "데이터", "수치", "배경"]);
-    results.push({
-      title:"근거/현황(최소 단서)",
-      level: hasEvidence ? "g" : "y",
-      msg: hasEvidence ? "근거/현황 단서가 있습니다." : "결론을 뒷받침하는 근거 단서가 약합니다. 수치
+      if(category === "sns"){
+        const shortEnough = text.length <= 600 && lines.length <= 6;
+        items.push(makeItem(
+          "한 번에 읽히는 길이",
+          shortEnough ? "g" : "y",
+          shortEnough ? "길이가 과도하지 않습니다." : "SNS는 집중 시간이 짧습니다. 핵심 문장을 앞에 두고, 문장/줄 수를 줄이세요."
+        ));
+
+        const hasContext = hasAny(t, ["오늘","이번","최근","앞두고","발표","공유","안내"]) || extractDates(t).length > 0;
+        items.push(makeItem(
+          "맥락(상황/대상) 최소 포함",
+          hasContext ? "g" : "y",
+          hasContext ? "맥락 단서가 있습니다." : "맥락이 부족하면 오해가 생깁니다. ‘지금/무슨 일/대상’을 한 줄로 보강하세요."
+        ));
+
+        const hasCTA = hasAny(t, ["링크","클릭","확인","신청","자세히","프로필","첨부"]) || /https?:\/\//.test(t);
+        items.push(makeItem(
+          "의도(CTA) 명시",
+          hasCTA ? "g" : "y",
+          hasCTA ? "CTA 단서가 있습니다." : "의도가 안내/유도라면 CTA(확인/링크/첨부)를 명시하세요."
+        ));
+
+        const hasOverClaim = hasAny(t, ["무조건","절대","완벽","최고","역대","충격","대박"]);
+        items.push(makeItem(
+          "단정/과잉 확신 표현",
+          hasOverClaim ? "y" : "g",
+          hasOverClaim ? "단정/과잉 확신 표현이 오해를 부를 수 있습니다. 표현 강도를 낮추면 안전합니다." : "표현 강도가 과도하지 않습니다."
+        ));
+
+        const vagueCount = countMatches(t, /(의미|강화|시너지|혁신|선도|차별화|가치)/g);
+        items.push(makeItem(
+          "추상어 밀도",
+          vagueCount >= 2 ? "y" : "g",
+          vagueCount >= 2 ? "추상어가 반복되면 메시지가 흐려집니다. 1개만 남기고 사실/사례로 치환하세요." : "추상어 밀도가 과도하지 않습니다."
+        ));
+      }
+
+      return items;
+    }
+
+    function renderList(el, items){
+      el.innerHTML = "";
+      items.forEach(it => {
+        const li = document.createElement("li");
+        const icon = it.level === "g" ? "🟢" : (it.level === "y" ? "🟡" : "🔴");
+        li.innerHTML = `<b>${icon} ${it.title}</b><div class="muted" style="margin-top:4px">${it.msg}</div>`;
+        el.appendChild(li);
+      });
+    }
+
+    function renderKpi(el, allItems){
+      const s = summarize(allItems);
+      el.innerHTML = "";
+      const mk = (dotCls, label, n) => {
+        const span = document.createElement("span");
+        span.className = "pill";
+        span.innerHTML = `<span class="dot ${dotCls}"></span> ${label}: <b>${n}</b>`;
+        return span;
+      };
+      el.appendChild(mk("g","🟢", s.g));
+      el.appendChild(mk("y","🟡", s.y));
+      el.appendChild(mk("r","🔴", s.r));
+    }
+
+    // UI 바인딩
+    const categoryEl = document.getElementById("category");
+    const hintEl = document.getElementById("categoryHint");
+    const textEl = document.getElementById("inputText");
+    const counterEl = document.getElementById("counter");
+    const btnEl = document.getElementById("checkBtn");
+
+    function setHint(){
+      const c = categoryEl.value;
+      hintEl.textContent = categoryMeta[c].hint;
+    }
+    categoryEl.addEventListener("change", setHint);
+    setHint();
+
+    function updateCounter(){
+      let val = textEl.value;
+      if(val.length > MAX_LEN){
+        textEl.value = val.slice(0, MAX_LEN);
+      }
+      const len = textEl.value.length;
+      counterEl.textContent = `${len} / ${MAX_LEN}`;
+      btnEl.disabled = textEl.value.trim().length === 0;
+    }
+    textEl.addEventListener("input", updateCounter);
+    updateCounter();
+
+    function runCheck(){
+      const category = categoryEl.value;
+      const text = textEl.value.trim();
+      if(!text){
+        return;
+      }
+
+      const common = commonChecks(text);
+      const cat = categoryChecks(category, text);
+      const all = [...common, ...cat];
+      const verdict = verdictFrom(all);
+
+      const badge = document.getElementById("verdictBadge");
+      const msg = document.getElementById("verdictMsg");
+      const kpi = document.getElementById("kpiRow");
+
+      const label = categoryMeta[category].label;
+
+      if(verdict === "GREEN"){
+        badge.className = "badge bGreen";
+        badge.textContent = "🟢 의미가 비교적 명확함";
+        msg.textContent = `${label} 관점에서 오해의 여지가 적고 쉽게 이해될 가능성이 높습니다.`;
+      }else if(verdict === "YELLOW"){
+        badge.className = "badge bYellow";
+        badge.textContent = "🟡 오해의 여지 있음";
+        msg.textContent = `${label} 관점에서 일부 문장이 오해의 여지가 있습니다. 아래 항목을 우선 보완하세요.`;
+      }else{
+        badge.className = "badge bRed";
+        badge.textContent = "🔴 오해 가능성 큼";
+        msg.textContent = `${label} 관점에서 오해 가능성이 큽니다. 맥락·근거 보완을 우선 검토하세요.`;
+      }
+
+      renderKpi(kpi, all);
+      renderList(document.getElementById("commonList"), common);
+      renderList(document.getElementById("categoryList"), cat);
+
+      const wrap = document.getElementById("resultWrap");
+      wrap.style.display = "block";
+      wrap.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    // 글로벌 스코프 노출
+    window.runCheck = runCheck;
+  </script>
+</body>
+</html>
