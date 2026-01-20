@@ -480,8 +480,7 @@
           hasVaguePromo ? "y" : "g",
           hasVaguePromo ? "추상 홍보 표현이 겹칠 수 있습니다. 1개만 남기고 근거/맥락으로 치환하세요." : "추상 홍보 표현이 과도하지 않습니다."
         ));
-
-        const hasQuote = /“|”|\"/.test(t) || hasAny(t, ["말했다","밝혔다","설명했다",""" ]);
+        const hasQuote = /[“”"]/.test(text) || hasAny(t, ["말했다","밝혔다","설명했다"]);
         items.push(makeItem(
           "인용/발언(필요 시)",
           hasQuote ? "g" : "y",
@@ -554,6 +553,15 @@
     }
 
     // UI 바인딩
+    function escapeHtml(str){
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
     const categoryEl = document.getElementById("category");
     const hintEl = document.getElementById("categoryHint");
     const textEl = document.getElementById("inputText");
@@ -594,9 +602,12 @@
       const badge = document.getElementById("verdictBadge");
       const msg = document.getElementById("verdictMsg");
       const kpi = document.getElementById("kpiRow");
+      const commonList = document.getElementById("commonList");
+      const categoryList = document.getElementById("categoryList");
 
       const label = categoryMeta[category].label;
 
+      // 상단 요약(신호)
       if(verdict === "GREEN"){
         badge.className = "badge bGreen";
         badge.textContent = "🟢 의미가 비교적 명확함";
@@ -608,39 +619,41 @@
       }else{
         badge.className = "badge bRed";
         badge.textContent = "🔴 오해 가능성 큼";
-        msg.textContent = `${label} 관점에서 오해 가능성이 큽니다. 맥락·근거 보완을 우선 검토하세요.`;
+        msg.textContent = `${label} 관점에서 오해 가능성이 큽니다. 맥락·근거 보완이 필요합니다.`;
       }
 
-      // 체크리스트 렌더
-      const listEl = document.getElementById("checklist");
-      listEl.innerHTML = "";
-      const items = checklistByCategory[category];
+      // KPI(공통/카테고리별 요약)
+      const cs = summarize(common);
+      const ks = summarize(cat);
+      kpi.innerHTML = "";
+      kpi.insertAdjacentHTML("beforeend", `<span class="pill"><span class="dot g"></span>공통 🟢 ${cs.g}</span>`);
+      kpi.insertAdjacentHTML("beforeend", `<span class="pill"><span class="dot y"></span>공통 🟡 ${cs.y}</span>`);
+      kpi.insertAdjacentHTML("beforeend", `<span class="pill"><span class="dot r"></span>공통 🔴 ${cs.r}</span>`);
+      kpi.insertAdjacentHTML("beforeend", `<span class="pill"><span class="dot g"></span>${label} 🟢 ${ks.g}</span>`);
+      kpi.insertAdjacentHTML("beforeend", `<span class="pill"><span class="dot y"></span>${label} 🟡 ${ks.y}</span>`);
+      kpi.insertAdjacentHTML("beforeend", `<span class="pill"><span class="dot r"></span>${label} 🔴 ${ks.r}</span>`);
 
-      items.forEach(it => {
-        const st = res.itemStatus[it.key] || "WARN";
-        const li = document.createElement("li");
-        if(st === "OK") li.innerHTML = `<span class="ok">✓</span> ${it.text}`;
-        if(st === "WARN") li.innerHTML = `<span class="warn">△</span> ${it.text}`;
-        if(st === "BAD") li.innerHTML = `<span class="bad">✕</span> ${it.text}`;
-        listEl.appendChild(li);
-      });
-
-      // 보완 포인트 렌더
-      const fixesEl = document.getElementById("fixes");
-      fixesEl.innerHTML = "";
-      if(res.fixes.length === 0){
-        const li = document.createElement("li");
-        li.textContent = "현재 단계에서는 추가 보완 포인트가 크게 확인되지 않았습니다.";
-        fixesEl.appendChild(li);
-      } else {
-        res.fixes.forEach(f => {
+      // 리스트 렌더
+      function renderList(ul, items){
+        ul.innerHTML = "";
+        if(!items || items.length === 0){
           const li = document.createElement("li");
-          li.textContent = f;
-          fixesEl.appendChild(li);
+          li.textContent = "해당 항목 없음";
+          ul.appendChild(li);
+          return;
+        }
+        items.forEach(i => {
+          const li = document.createElement("li");
+          const emoji = i.level === "g" ? "🟢" : (i.level === "y" ? "🟡" : "🔴");
+          li.innerHTML = `<b>${emoji} ${escapeHtml(i.title)}</b><div class="muted" style="margin-top:4px">${escapeHtml(i.msg)}</div>`;
+          ul.appendChild(li);
         });
       }
 
-      // 결과 영역 노출
+      renderList(commonList, common);
+      renderList(categoryList, cat);
+
+      // 결과 노출
       const wrap = document.getElementById("resultWrap");
       wrap.style.display = "block";
       wrap.scrollIntoView({ behavior: "smooth", block: "start" });
