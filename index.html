@@ -3,77 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-
-  
-  <!-- SEO 기본 설정 -->
-  <meta name="description" content="업무용 글쓰기·보도자료·사내공지 등 커뮤니케이션 문장을 카테고리(판단 관점) 기준으로 점검하고, 오해 가능성을 신호등으로 안내하는 Comms Checker." />
-  <meta name="robots" content="index,follow,max-image-preview:large" />
-  <link rel="canonical" href="https://nicoleta2022.github.io/comms-checker/" />
-  <link rel="sitemap" type="application/xml" href="https://nicoleta2022.github.io/comms-checker/sitemap.xml" />
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="Comms Checker" />
-  <meta property="og:title" content="Comms Checker | 업무용 글쓰기 점검" />
-  <meta property="og:description" content="체크리스트 기반으로 문장을 점검하고, 오해 가능성을 신호등으로 안내합니다." />
-  <meta property="og:url" content="https://nicoleta2022.github.io/comms-checker/" />
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Comms Checker | 업무용 글쓰기 점검" />
-  <meta name="twitter:description" content="카테고리(판단 관점) 기준으로 문장을 점검하고, 오해 가능성을 신호등으로 안내합니다." />
-  <meta name="google" content="notranslate" />
-  <link rel="alternate" hreflang="ko" href="https://nicoleta2022.github.io/comms-checker/" />
-  <link rel="alternate" hreflang="x-default" href="https://nicoleta2022.github.io/comms-checker/" />
-
-  <!-- 구조화 데이터(JSON-LD) -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Comms Checker",
-    "url": "https://nicoleta2022.github.io/comms-checker/",
-    "applicationCategory": "BusinessApplication",
-    "operatingSystem": "All",
-    "description": "업무용 글쓰기·보도자료·사내공지 등 커뮤니케이션 문장을 카테고리(판단 관점) 기준으로 점검하고, 오해 가능성을 신호등으로 안내합니다.",
-    "inLanguage": ["ko"],
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD"
-    }
-  }
-  </script>
-<title>Comms Checker | 업무용 글쓰기 점검</title>
-  <meta name="description" content="보도자료·내부공지·이메일 등 PR/커뮤니케이션 문장에서 오해가 생길 수 있는 지점을 구조적으로 점검합니다. 판단을 대신하지 않는 보조 신호 도구입니다." />
-  <link rel="canonical" href="https://nicoleta2022.github.io/comms-checker/" />
-
-  <!-- 검색 인덱싱 허용 -->
-  <meta name="robots" content="index,follow" />
-  <meta name="googlebot" content="index,follow" />
-  <meta name="bingbot" content="index,follow" />
-
-  <!-- Open Graph (네이버/카카오/다음 공유) -->
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="Comms Checker | PR·커뮤니케이션 문장 오해 점검 도구" />
-  <meta property="og:description" content="보도자료·내부공지·이메일 문장에서 오해 가능성을 신호로 표시합니다. 판단을 대신하지 않는 커뮤니케이션 점검 도구." />
-  <meta property="og:url" content="https://nicoleta2022.github.io/comms-checker/" />
-  <meta property="og:site_name" content="Comms Checker" />
-  <meta property="og:locale" content="ko_KR" />
-
-  <!-- 구조화 데이터 (Google SEO 핵심) -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "Comms Checker",
-    "applicationCategory": "BusinessApplication",
-    "operatingSystem": "Web",
-    "url": "https://nicoleta2022.github.io/comms-checker/",
-    "description": "PR·마케팅 커뮤니케이션 문장에서 오해 가능성을 구조적으로 점검하는 보조 신호 도구",
-    "inLanguage": "ko-KR"
-  }
-  </script>
-<style>
-    
-    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
-:root{
+  <title>Comms Checker</title>
+  <style>
+    :root{
       --bg:#ffffff;
       --card:#ffffff;
       --line:#e5e7eb;
@@ -157,30 +89,6 @@
 
     .kpi{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:10px}
     .kpi .pill{color:var(--text); background:#f9fafb}
-
-    /* Result - Stage 1 / Stage 2 */
-    .stage1{display:flex; gap:12px; align-items:stretch; justify-content:space-between; margin-top:12px}
-    .stage1Main{flex:1; border:1px solid var(--line); border-radius:14px; padding:12px 14px; background:#ffffff; box-shadow:var(--shadow)}
-    .stage1Label{font-size:12px; font-weight:900; color:var(--muted); margin-bottom:6px}
-    .stage1Text{font-size:13px; line-height:1.5}
-    .stage1Side{display:flex; gap:10px}
-    .mini{width:140px; border:1px solid var(--line); border-radius:14px; padding:12px; background:#ffffff; box-shadow:var(--shadow); display:flex; flex-direction:column; justify-content:center}
-    .miniTitle{font-size:12px; color:var(--muted); font-weight:800}
-    .miniValue{font-size:20px; font-weight:900; margin-top:4px}
-    .topFix{margin-top:10px; border:1px solid var(--line); border-radius:14px; padding:12px 14px; background:#ffffff; box-shadow:var(--shadow)}
-    .topFixTitle{font-size:13px; font-weight:900; margin-bottom:8px}
-    .topFixList{margin:0; padding-left:18px}
-    .topFixList li{margin:6px 0}
-    .topFixNote{margin-top:8px; font-size:12px}
-    .toggleRow{display:flex; justify-content:flex-end; margin-top:10px}
-    .toggle{font-size:12px; color:var(--muted); display:flex; gap:8px; align-items:center; user-select:none}
-    .toggle input{accent-color:#111827}
-    @media (max-width: 720px){
-      .stage1{flex-direction:column}
-      .stage1Side{flex-direction:row}
-      .mini{flex:1; width:auto}
-    }
-
     .hr{height:1px; background:var(--line); margin:14px 0}
 
     .footnote{color:var(--muted); font-size:12px; margin-top:10px}
@@ -191,38 +99,18 @@
     .legendTop{font-size:12px; font-weight:900}
     .legendSub{font-size:12px; color:var(--muted); margin-top:4px; line-height:1.4}
   
-    /* Collapsible common results */
-    details.commonDetails{border:1px solid var(--line); border-radius:14px; padding:0; background:#fff;}
-    details.commonDetails > summary.sectionTitle{padding:14px 16px; margin:0; cursor:pointer; list-style:none; display:flex; align-items:center; justify-content:space-between;}
-    details.commonDetails > summary.sectionTitle::-webkit-details-marker{display:none;}
-details.commonDetails .detailsBody{padding:0 16px 12px;}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+.introLine{margin:8px 0 18px;line-height:1.7}
 </style>
 </head>
 <body>
-  
-  <!-- (SEO) 검색 노출 보강용 텍스트: 화면에는 보이지 않습니다 -->
-  <div class="sr-only" aria-hidden="true">
-    <h2>업무용 글쓰기 점검 도구</h2>
-    <p>
-      Comms Checker는 보도자료, 사내공지, 이메일, 기고문, CEO 메시지 등 업무용 글쓰기를
-      체크리스트 기준으로 빠르게 점검하는 무료 도구입니다. 글쓰기 점검, 문장 점검, 보도자료 작성,
-      사내 공지 작성, 업무 메일 작성, 커뮤니케이션 문구 검토, PR 문서 검수, 브랜드 메시지 점검,
-      논리 전개 점검, 오해 소지 점검, 기사화 가능성 점검, 기자 관점 점검 등의 키워드로 검색하는
-      사용자를 위해 제작되었습니다.
-    </p>
-    <p>
-      It is a lightweight checklist-based writing checker for professional communications.
-      It helps PR and marketing communication professionals review clarity, context, rationale,
-      target audience, action steps, and ambiguity risks.
-    </p>
-    <p>
-      추천 검색어: 글쓰기 점검, 업무용 글쓰기, 문장 점검, 보도자료 점검, 사내공지 점검,
-      공지문 작성, 내부 공지 작성, 사내메일 작성, 업무 이메일 작성, 커뮤니케이션 체크리스트,
-      PR 문서, 홍보 문구, 브랜드 메시지, 기자 관점, 기사화, 문장 다듬기, 문장력.
-    </p>
-  </div>
-<div class="wrap">
+  <div class="wrap">
     <h1>Comms Checker</h1>
+    <p class="muted introLine">보도자료·사내공지·보고서 등 업무용 글쓰기에서 오해가 발생할 수 있는 지점을 사전에 점검하는 커뮤니케이션 판단 보조 도구입니다.</p>
+    <p class="sr-only">이 사이트는 글쓰기 점검과 업무용 글쓰기를 위한 도구로, 보도자료 점검, 사내공지 문장 점검, 보고서 문장 정리 등 커뮤니케이션 오해 가능성을 사전에 확인할 수 있도록 설계되었습니다. This tool helps PR and marketing professionals evaluate message clarity before publishing and identify potential points of misinterpretation.</p>
+
+
     <p class="sub">카테고리(판단 관점) 기준으로 커뮤니케이션 문장을 점검합니다. 결과는 ‘정답/오답’이 아니라, 판단자가 어디에서 멈추거나 오해할 가능성이 높은지에 대한 신호입니다.</p>
 
     <section class="card" aria-label="안내">
@@ -292,59 +180,24 @@ details.commonDetails .detailsBody{padding:0 16px 12px;}
         <div class="muted" id="verdictMsg"></div>
       </div>
 
-      <div class="stage1">
-        <div class="stage1Main">
-          <div class="stage1Label">1단계 요약</div>
-          <div class="stage1Text" id="stage1Text">-</div>
-        </div>
-        <div class="stage1Side">
-          <div class="mini">
-            <div class="miniTitle">공통 보완</div>
-            <div class="miniValue" id="commonNeedCount">-</div>
-          </div>
-          <div class="mini">
-            <div class="miniTitle">카테고리 보완</div>
-            <div class="miniValue" id="catNeedCount">-</div>
-          </div>
-        </div>
-      </div>
+      <div class="kpi" id="kpiRow"></div>
 
-      <div class="topFix">
-        <div class="topFixTitle">우선 보완 TOP 3</div>
-        <ol id="topFixList" class="topFixList"></ol>
-        <div class="topFixNote muted">* 초록 항목은 기본적으로 숨기고, 보완이 필요한 항목(노랑/빨강)만 우선 보여줍니다.</div>
-      </div>
-<div class="hr"></div>
+      <div class="hr"></div>
 
       <div class="grid">
-        
-        <details class="commonDetails">
-          <summary class="sectionTitle">▶ 공통 점검 결과 (접기/더보기)</summary>
-          <div class="detailsBody">
-            <ul id="commonList"></ul>
-          </div>
-        </details>
-        <details class="commonDetails">
-          <summary class="sectionTitle">▶ 카테고리 점검 결과 (접기/더보기)</summary>
-          <div class="detailsBody">
-            <ul id="categoryList"></ul>
-          </div>
-        </details>
+        <div>
+          <div class="sectionTitle">▶ 공통 점검 결과</div>
+          <ul id="commonList"></ul>
+        </div>
+        <div>
+          <div class="sectionTitle">▶ 카테고리 점검 결과</div>
+          <ul id="categoryList"></ul>
+        </div>
       </div>
 
       <div class="hr"></div>
       <div class="footnote">이 결과는 규칙 기반 점검입니다. 최종 판단과 수정은 작성자의 몫입니다.</div>
     </section>
-    <section class="card" id="about" aria-label="Comm Checker 소개">
-      <div class="sectionTitle">Comm Checker란?</div>
-      <p class="muted" style="margin:0 0 10px; line-height:1.7">
-        Comm Checker는 보도자료, 내부 공지, 이메일 등 PR·커뮤니케이션 문장에서 오해가 생길 수 있는 지점을 구조적으로 점검하는 무료 보조 도구입니다.
-      </p>
-      <p class="muted" style="margin:0; line-height:1.7">
-        결과는 정답/오답이나 점수가 아니라, 선택한 카테고리의 판단자가 오해하거나 판단을 지연할 가능성이 있는 지점을 신호로 보여줍니다.
-      </p>
-    </section>
-
 
   </div>
 
@@ -692,18 +545,11 @@ details.commonDetails .detailsBody{padding:0 16px 12px;}
     }
 
     function renderList(el, items){
-      const viewItems = Array.isArray(items) ? items : [];
       el.innerHTML = "";
-      if(viewItems.length === 0){
-        const li = document.createElement("li");
-        li.textContent = "해당 항목 없음";
-        el.appendChild(li);
-        return;
-      }
-      viewItems.forEach(it => {
+      items.forEach(it => {
         const li = document.createElement("li");
         const icon = it.level === "g" ? "🟢" : (it.level === "y" ? "🟡" : "🔴");
-        li.innerHTML = `<b>${icon} ${escapeHtml(it.title)}</b><div class="muted" style="margin-top:4px">${escapeHtml(it.msg)}</div>`;
+        li.innerHTML = `<b>${icon} ${it.title}</b><div class="muted" style="margin-top:4px">${it.msg}</div>`;
         el.appendChild(li);
       });
     }
@@ -771,6 +617,7 @@ details.commonDetails .detailsBody{padding:0 16px 12px;}
 
       const badge = document.getElementById("verdictBadge");
       const msg = document.getElementById("verdictMsg");
+      const kpi = document.getElementById("kpiRow");
       const commonList = document.getElementById("commonList");
       const categoryList = document.getElementById("categoryList");
 
@@ -790,38 +637,35 @@ details.commonDetails .detailsBody{padding:0 16px 12px;}
         badge.textContent = "🔴 오해 가능성 큼";
         msg.textContent = `${label} 관점에서 오해 가능성이 큽니다. 맥락·근거 보완이 필요합니다.`;
       }
-      // 1단계 요약(보완 필요 수 + TOP3)
-      const commonNeed = common.filter(i => i.level !== "g");
-      const catNeed = cat.filter(i => i.level !== "g");
 
-      document.getElementById("stage1Text").textContent =
-        `선택한 카테고리의 판단자에게 오해의 여지가 있거나 판단의 어려움을 겪을 가능성이 있는지를 보여주는 신호입니다.`;
+      // KPI(공통/카테고리별 요약)
+      const cs = summarize(common);
+      const ks = summarize(cat);
+      kpi.innerHTML = "";
+      kpi.insertAdjacentHTML("beforeend", `<span class="pill"><span class="dot g"></span>공통 🟢 ${cs.g}</span>`);
+      kpi.insertAdjacentHTML("beforeend", `<span class="pill"><span class="dot y"></span>공통 🟡 ${cs.y}</span>`);
+      kpi.insertAdjacentHTML("beforeend", `<span class="pill"><span class="dot r"></span>공통 🔴 ${cs.r}</span>`);
+      kpi.insertAdjacentHTML("beforeend", `<span class="pill"><span class="dot g"></span>${label} 🟢 ${ks.g}</span>`);
+      kpi.insertAdjacentHTML("beforeend", `<span class="pill"><span class="dot y"></span>${label} 🟡 ${ks.y}</span>`);
+      kpi.insertAdjacentHTML("beforeend", `<span class="pill"><span class="dot r"></span>${label} 🔴 ${ks.r}</span>`);
 
-      document.getElementById("commonNeedCount").textContent = commonNeed.length;
-      document.getElementById("catNeedCount").textContent = catNeed.length;
-
-      // TOP 3 (🔴 우선, 그 다음 🟡)
-      const rank = (lvl) => (lvl === "r" ? 0 : (lvl === "y" ? 1 : 2));
-      const merged = [
-        ...common.map(i => ({...i, _section:"공통"})),
-        ...cat.map(i => ({...i, _section: label}))
-      ].filter(i => i.level !== "g")
-       .sort((a,b) => rank(a.level) - rank(b.level));
-
-      const topFixEl = document.getElementById("topFixList");
-      topFixEl.innerHTML = "";
-      if(merged.length === 0){
-        topFixEl.innerHTML = "<li>보완이 필요한 항목이 없습니다.</li>";
-      }else{
-        merged.slice(0,3).forEach(it => {
-          const emoji = it.level === "y" ? "🟡" : "🔴";
+      // 리스트 렌더
+      function renderList(ul, items){
+        ul.innerHTML = "";
+        if(!items || items.length === 0){
           const li = document.createElement("li");
-          li.innerHTML = `<b>${emoji} [${escapeHtml(it._section)}] ${escapeHtml(it.title)}</b><div class="muted" style="margin-top:4px">${escapeHtml(it.msg)}</div>`;
-          topFixEl.appendChild(li);
+          li.textContent = "해당 항목 없음";
+          ul.appendChild(li);
+          return;
+        }
+        items.forEach(i => {
+          const li = document.createElement("li");
+          const emoji = i.level === "g" ? "🟢" : (i.level === "y" ? "🟡" : "🔴");
+          li.innerHTML = `<b>${emoji} ${escapeHtml(i.title)}</b><div class="muted" style="margin-top:4px">${escapeHtml(i.msg)}</div>`;
+          ul.appendChild(li);
         });
       }
 
-      // 리스트 렌더
       renderList(commonList, common);
       renderList(categoryList, cat);
 
@@ -830,7 +674,6 @@ details.commonDetails .detailsBody{padding:0 16px 12px;}
       wrap.style.display = "block";
       wrap.scrollIntoView({ behavior: "smooth", block: "start" });
     }
-    window.runCheck = runCheck;
 
     // TODO (향후 AI 연결):
     // runCheck() 내부에서 evaluate() 대신 fetch('/api/check', ...)로 JSON을 받아
