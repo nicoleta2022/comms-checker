@@ -89,6 +89,30 @@
 
     .kpi{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:10px}
     .kpi .pill{color:var(--text); background:#f9fafb}
+
+    /* Result - Stage 1 / Stage 2 */
+    .stage1{display:flex; gap:12px; align-items:stretch; justify-content:space-between; margin-top:12px}
+    .stage1Main{flex:1; border:1px solid var(--line); border-radius:14px; padding:12px 14px; background:#ffffff; box-shadow:var(--shadow)}
+    .stage1Label{font-size:12px; font-weight:900; color:var(--muted); margin-bottom:6px}
+    .stage1Text{font-size:13px; line-height:1.5}
+    .stage1Side{display:flex; gap:10px}
+    .mini{width:140px; border:1px solid var(--line); border-radius:14px; padding:12px; background:#ffffff; box-shadow:var(--shadow); display:flex; flex-direction:column; justify-content:center}
+    .miniTitle{font-size:12px; color:var(--muted); font-weight:800}
+    .miniValue{font-size:20px; font-weight:900; margin-top:4px}
+    .topFix{margin-top:10px; border:1px solid var(--line); border-radius:14px; padding:12px 14px; background:#ffffff; box-shadow:var(--shadow)}
+    .topFixTitle{font-size:13px; font-weight:900; margin-bottom:8px}
+    .topFixList{margin:0; padding-left:18px}
+    .topFixList li{margin:6px 0}
+    .topFixNote{margin-top:8px; font-size:12px}
+    .toggleRow{display:flex; justify-content:flex-end; margin-top:10px}
+    .toggle{font-size:12px; color:var(--muted); display:flex; gap:8px; align-items:center; user-select:none}
+    .toggle input{accent-color:#111827}
+    @media (max-width: 720px){
+      .stage1{flex-direction:column}
+      .stage1Side{flex-direction:row}
+      .mini{flex:1; width:auto}
+    }
+
     .hr{height:1px; background:var(--line); margin:14px 0}
 
     .footnote{color:var(--muted); font-size:12px; margin-top:10px}
@@ -99,19 +123,17 @@
     .legendTop{font-size:12px; font-weight:900}
     .legendSub{font-size:12px; color:var(--muted); margin-top:4px; line-height:1.4}
   
-.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-
-.introLine{margin:8px 0 18px;line-height:1.7}
+    /* Collapsible common results */
+    details.commonDetails{border:1px solid var(--line); border-radius:14px; padding:0; background:#fff;}
+    details.commonDetails > summary.sectionTitle{padding:14px 16px; margin:0; cursor:pointer; list-style:none; display:flex; align-items:center; justify-content:space-between;}
+    details.commonDetails > summary.sectionTitle::-webkit-details-marker{display:none;}
+details.commonDetails .detailsBody{padding:0 16px 12px;}
 </style>
 </head>
 <body>
   <div class="wrap">
     <h1>Comms Checker</h1>
-    <p class="muted introLine">보도자료·사내공지·보고서 등 업무용 글쓰기에서 오해가 발생할 수 있는 지점을 사전에 점검하는 커뮤니케이션 판단 보조 도구입니다.</p>
-    <p class="sr-only">이 사이트는 글쓰기 점검과 업무용 글쓰기를 위한 도구로, 보도자료 점검, 사내공지 문장 점검, 보고서 문장 정리 등 커뮤니케이션 오해 가능성을 사전에 확인할 수 있도록 설계되었습니다. This tool helps PR and marketing professionals evaluate message clarity before publishing and identify potential points of misinterpretation.</p>
-
-
-    <p class="sub">카테고리(판단 관점) 기준으로 커뮤니케이션 문장을 점검합니다. 결과는 ‘정답/오답’이 아니라, 판단자가 어디에서 멈추거나 오해할 가능성이 높은지에 대한 신호입니다.</p>
+    <p class="sub">카테고리(판단 관점) 기준으로 커뮤니케이션 문장을 점검합니다. 결과는 ‘정답/오답’이 아니라, 판단자가 어디에서 멈추거나 오해할 가능성이 높은지에 대한 신호입니다.<br>보도자료·사내공지·보고서 등 업무용 글쓰기에서 오해가 발생할 수 있는 지점을 사전에 점검하는 커뮤니케이션 판단 보조 도구입니다.</p>
 
     <section class="card" aria-label="안내">
       <div class="sectionTitle">안내</div>
@@ -180,19 +202,44 @@
         <div class="muted" id="verdictMsg"></div>
       </div>
 
-      <div class="kpi" id="kpiRow"></div>
+      <div class="stage1">
+        <div class="stage1Main">
+          <div class="stage1Label">1단계 요약</div>
+          <div class="stage1Text" id="stage1Text">-</div>
+        </div>
+        <div class="stage1Side">
+          <div class="mini">
+            <div class="miniTitle">공통 보완</div>
+            <div class="miniValue" id="commonNeedCount">-</div>
+          </div>
+          <div class="mini">
+            <div class="miniTitle">카테고리 보완</div>
+            <div class="miniValue" id="catNeedCount">-</div>
+          </div>
+        </div>
+      </div>
 
-      <div class="hr"></div>
+      <div class="topFix">
+        <div class="topFixTitle">우선 보완 TOP 3</div>
+        <ol id="topFixList" class="topFixList"></ol>
+        <div class="topFixNote muted">* 초록 항목은 기본적으로 숨기고, 보완이 필요한 항목(노랑/빨강)만 우선 보여줍니다.</div>
+      </div>
+<div class="hr"></div>
 
       <div class="grid">
-        <div>
-          <div class="sectionTitle">▶ 공통 점검 결과</div>
-          <ul id="commonList"></ul>
-        </div>
-        <div>
-          <div class="sectionTitle">▶ 카테고리 점검 결과</div>
-          <ul id="categoryList"></ul>
-        </div>
+        
+        <details class="commonDetails">
+          <summary class="sectionTitle">▶ 공통 점검 결과 (접기/더보기)</summary>
+          <div class="detailsBody">
+            <ul id="commonList"></ul>
+          </div>
+        </details>
+        <details class="commonDetails">
+          <summary class="sectionTitle">▶ 카테고리 점검 결과 (접기/더보기)</summary>
+          <div class="detailsBody">
+            <ul id="categoryList"></ul>
+          </div>
+        </details>
       </div>
 
       <div class="hr"></div>
@@ -545,11 +592,18 @@
     }
 
     function renderList(el, items){
+      const viewItems = Array.isArray(items) ? items : [];
       el.innerHTML = "";
-      items.forEach(it => {
+      if(viewItems.length === 0){
+        const li = document.createElement("li");
+        li.textContent = "해당 항목 없음";
+        el.appendChild(li);
+        return;
+      }
+      viewItems.forEach(it => {
         const li = document.createElement("li");
         const icon = it.level === "g" ? "🟢" : (it.level === "y" ? "🟡" : "🔴");
-        li.innerHTML = `<b>${icon} ${it.title}</b><div class="muted" style="margin-top:4px">${it.msg}</div>`;
+        li.innerHTML = `<b>${icon} ${escapeHtml(it.title)}</b><div class="muted" style="margin-top:4px">${escapeHtml(it.msg)}</div>`;
         el.appendChild(li);
       });
     }
@@ -617,7 +671,6 @@
 
       const badge = document.getElementById("verdictBadge");
       const msg = document.getElementById("verdictMsg");
-      const kpi = document.getElementById("kpiRow");
       const commonList = document.getElementById("commonList");
       const categoryList = document.getElementById("categoryList");
 
@@ -637,35 +690,38 @@
         badge.textContent = "🔴 오해 가능성 큼";
         msg.textContent = `${label} 관점에서 오해 가능성이 큽니다. 맥락·근거 보완이 필요합니다.`;
       }
+      // 1단계 요약(보완 필요 수 + TOP3)
+      const commonNeed = common.filter(i => i.level !== "g");
+      const catNeed = cat.filter(i => i.level !== "g");
 
-      // KPI(공통/카테고리별 요약)
-      const cs = summarize(common);
-      const ks = summarize(cat);
-      kpi.innerHTML = "";
-      kpi.insertAdjacentHTML("beforeend", `<span class="pill"><span class="dot g"></span>공통 🟢 ${cs.g}</span>`);
-      kpi.insertAdjacentHTML("beforeend", `<span class="pill"><span class="dot y"></span>공통 🟡 ${cs.y}</span>`);
-      kpi.insertAdjacentHTML("beforeend", `<span class="pill"><span class="dot r"></span>공통 🔴 ${cs.r}</span>`);
-      kpi.insertAdjacentHTML("beforeend", `<span class="pill"><span class="dot g"></span>${label} 🟢 ${ks.g}</span>`);
-      kpi.insertAdjacentHTML("beforeend", `<span class="pill"><span class="dot y"></span>${label} 🟡 ${ks.y}</span>`);
-      kpi.insertAdjacentHTML("beforeend", `<span class="pill"><span class="dot r"></span>${label} 🔴 ${ks.r}</span>`);
+      document.getElementById("stage1Text").textContent =
+        `선택한 카테고리의 판단자에게 오해의 여지가 있거나 판단의 어려움을 겪을 가능성이 있는지를 보여주는 신호입니다.`;
 
-      // 리스트 렌더
-      function renderList(ul, items){
-        ul.innerHTML = "";
-        if(!items || items.length === 0){
+      document.getElementById("commonNeedCount").textContent = commonNeed.length;
+      document.getElementById("catNeedCount").textContent = catNeed.length;
+
+      // TOP 3 (🔴 우선, 그 다음 🟡)
+      const rank = (lvl) => (lvl === "r" ? 0 : (lvl === "y" ? 1 : 2));
+      const merged = [
+        ...common.map(i => ({...i, _section:"공통"})),
+        ...cat.map(i => ({...i, _section: label}))
+      ].filter(i => i.level !== "g")
+       .sort((a,b) => rank(a.level) - rank(b.level));
+
+      const topFixEl = document.getElementById("topFixList");
+      topFixEl.innerHTML = "";
+      if(merged.length === 0){
+        topFixEl.innerHTML = "<li>보완이 필요한 항목이 없습니다.</li>";
+      }else{
+        merged.slice(0,3).forEach(it => {
+          const emoji = it.level === "y" ? "🟡" : "🔴";
           const li = document.createElement("li");
-          li.textContent = "해당 항목 없음";
-          ul.appendChild(li);
-          return;
-        }
-        items.forEach(i => {
-          const li = document.createElement("li");
-          const emoji = i.level === "g" ? "🟢" : (i.level === "y" ? "🟡" : "🔴");
-          li.innerHTML = `<b>${emoji} ${escapeHtml(i.title)}</b><div class="muted" style="margin-top:4px">${escapeHtml(i.msg)}</div>`;
-          ul.appendChild(li);
+          li.innerHTML = `<b>${emoji} [${escapeHtml(it._section)}] ${escapeHtml(it.title)}</b><div class="muted" style="margin-top:4px">${escapeHtml(it.msg)}</div>`;
+          topFixEl.appendChild(li);
         });
       }
 
+      // 리스트 렌더
       renderList(commonList, common);
       renderList(categoryList, cat);
 
@@ -674,6 +730,7 @@
       wrap.style.display = "block";
       wrap.scrollIntoView({ behavior: "smooth", block: "start" });
     }
+    window.runCheck = runCheck;
 
     // TODO (향후 AI 연결):
     // runCheck() 내부에서 evaluate() 대신 fetch('/api/check', ...)로 JSON을 받아
