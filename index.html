@@ -3,8 +3,38 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Comms Checker</title>
-  <style>
+
+  <title>Comms Checker | PR·커뮤니케이션 문장 오해 점검 도구</title>
+  <meta name="description" content="보도자료·내부공지·이메일 등 PR/커뮤니케이션 문장에서 오해가 생길 수 있는 지점을 구조적으로 점검합니다. 판단을 대신하지 않는 보조 신호 도구입니다." />
+  <link rel="canonical" href="https://nicoleta2022.github.io/comms-checker/" />
+
+  <!-- 검색 인덱싱 허용 -->
+  <meta name="robots" content="index,follow" />
+  <meta name="googlebot" content="index,follow" />
+  <meta name="bingbot" content="index,follow" />
+
+  <!-- Open Graph (네이버/카카오/다음 공유) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Comms Checker | PR·커뮤니케이션 문장 오해 점검 도구" />
+  <meta property="og:description" content="보도자료·내부공지·이메일 문장에서 오해 가능성을 신호로 표시합니다. 판단을 대신하지 않는 커뮤니케이션 점검 도구." />
+  <meta property="og:url" content="https://nicoleta2022.github.io/comms-checker/" />
+  <meta property="og:site_name" content="Comms Checker" />
+  <meta property="og:locale" content="ko_KR" />
+
+  <!-- 구조화 데이터 (Google SEO 핵심) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Comms Checker",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Web",
+    "url": "https://nicoleta2022.github.io/comms-checker/",
+    "description": "PR·마케팅 커뮤니케이션 문장에서 오해 가능성을 구조적으로 점검하는 보조 신호 도구",
+    "inLanguage": "ko-KR"
+  }
+  </script>
+<style>
     :root{
       --bg:#ffffff;
       --card:#ffffff;
@@ -229,13 +259,13 @@ details.commonDetails .detailsBody{padding:0 16px 12px;}
       <div class="grid">
         
         <details class="commonDetails">
-          <summary class="sectionTitle">▶공통 점검 결과 (접기/더보기)</summary>
+          <summary class="sectionTitle">공통 점검 결과 (접기/더보기)</summary>
           <div class="detailsBody">
             <ul id="commonList"></ul>
           </div>
         </details>
         <details class="commonDetails">
-          <summary class="sectionTitle">▶카테고리 점검 결과 (접기/더보기)</summary>
+          <summary class="sectionTitle">카테고리 점검 결과 (접기/더보기)</summary>
           <div class="detailsBody">
             <ul id="categoryList"></ul>
           </div>
@@ -245,6 +275,16 @@ details.commonDetails .detailsBody{padding:0 16px 12px;}
       <div class="hr"></div>
       <div class="footnote">이 결과는 규칙 기반 점검입니다. 최종 판단과 수정은 작성자의 몫입니다.</div>
     </section>
+    <section class="card" id="about" aria-label="Comm Checker 소개">
+      <div class="sectionTitle">Comm Checker란?</div>
+      <p class="muted" style="margin:0 0 10px; line-height:1.7">
+        Comm Checker는 보도자료, 내부 공지, 이메일 등 PR·커뮤니케이션 문장에서 오해가 생길 수 있는 지점을 구조적으로 점검하는 무료 보조 도구입니다.
+      </p>
+      <p class="muted" style="margin:0; line-height:1.7">
+        결과는 정답/오답이나 점수가 아니라, 선택한 카테고리의 판단자가 오해하거나 판단을 지연할 가능성이 있는 지점을 신호로 보여줍니다.
+      </p>
+    </section>
+
 
   </div>
 
@@ -740,5 +780,3 @@ details.commonDetails .detailsBody{padding:0 16px 12px;}
 </body>
 </html>
  
-
-
