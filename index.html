@@ -143,14 +143,15 @@ details.commonDetails .detailsBody{padding:0 16px 12px;}
 <body>
   <div class="wrap">
     <h1>Comms Checker</h1>
-    <p class="sub"><b>업무용 문장을 입력하고, 오해가 생길 수 있는 부분을 확인하세요</b><br><br>
-      Comms Checker는 보도자료·사내공지·보고서 등 업무용 글쓰기에서 읽는 사람이 판단을 멈추거나 해석이 갈릴 수 있는 지점을 카테고리(판단 관점) 기준으로 점검하는 커뮤니케이션 판단 보조 도구입니다.<br><br>
-      결과는 정답이나 오답이 아니라, 어디에서 판단 부담이 발생할 가능성이 높은지를 보여주는 신호로 제공됩니다.</p>
+    <p class="sub"><b>기업 글쓰기 구조 점검 도구</b></p>
+    <p class="sub">기업 문서를 작성한 뒤, 읽는 사람 관점에서 오해 가능성과 판단 부담 지점을 점검하세요.</p>
+    <p class="sub">Comms Checker는 보도자료·사내공지·보고서·임원 메시지 등 기업 문서에서 읽는 사람이 판단을 멈추거나 해석이 갈릴 수 있는 지점을 구조 기준으로 점검하는 커뮤니케이션 리스크 체크 도구입니다. 결과는 정답·오답이 아니라, 어디에서 판단 부담이 발생할 가능성이 높은지를 보여주는 신호로 제공됩니다.</p>
+    <p class="sub">기업 커뮤니케이션의 실패는 표현력이 아니라 판단 구조의 부재에서 발생합니다. 문장이 매끄러워도 맥락·근거·판단 기준이 정리되지 않으면 해석은 갈립니다. Comms Checker는 글을 대신 쓰는 도구가 아니라, 판단 구조를 점검하도록 돕는 사고 보조 도구입니다.</p>
 
     <section class="card" aria-label="안내">
       <div class="sectionTitle">안내</div>
       <p class="muted" style="margin:0 0 12px">
-        이 툴은 문장을 수정하거나 대신 작성하지 않습니다. 입력된 문장을 체크리스트 방식으로 점검합니다. 최종 판단과 수정은 작성자의 몫입니다.
+        이 도구는 문장을 수정하거나 대신 작성하지 않습니다. 입력된 문장을 체크리스트 기준으로 점검하고, 판단 기준의 누락·근거 약화·오해 가능성을 신호로 표시합니다. 최종 판단과 수정은 작성자의 몫입니다.
       </p>
 
       <details>
@@ -166,11 +167,11 @@ details.commonDetails .detailsBody{padding:0 16px 12px;}
         <label for="category">카테고리 선택 (판단 관점)</label>
         <div class="meta" style="margin-top:6px">
           <select id="category">
-            <option value="press_release">Press Release (외부/기자)</option>
-            <option value="c_level">C-level 메시지 (리더/조직)</option>
-            <option value="internal_notice">내부 안내 (구성원/실무자)</option>
-            <option value="work_report">업무 보고 (상사/의사결정자)</option>
-            <option value="sns">SNS 글 (대중/팔로워)</option>
+            <option value="press_release">보도자료 (외부 기사화 관점)</option>
+            <option value="internal_notice">사내공지 (구성원 이해·수용 관점)</option>
+            <option value="work_report">보고서·제안서 (의사결정자 관점)</option>
+            <option value="c_level">임원 메시지 (리더십 메시지 관점)</option>
+            <option value="general_doc">일반 기업 문서 (업무 전달 관점)</option>
           </select>
 
           <div class="legend" aria-label="판단 리스크 신호">
@@ -193,6 +194,21 @@ details.commonDetails .detailsBody{padding:0 16px 12px;}
           선택한 카테고리의 판단자에게 오해의 여지가 있거나 판단의 어려움을 겪을 가능성이 있는지를 보여주는 신호입니다.
         </div>
       </div>
+      <details style="margin-top:14px">
+        <summary>점검 기준 예시 (접기/더보기)</summary>
+        <div class="muted" style="margin-top:10px; line-height:1.7">
+          <div style="font-weight:900; margin-bottom:8px">🔎 동일한 주장·표현이 과도하게 반복되는가?</div>
+          <div style="font-weight:900; margin:10px 0 6px">판단 조건</div>
+          <ul style="margin:0; padding-left:18px">
+            <li>동일하거나 유사한 의미의 단어가 3회 이상 반복되는가</li>
+            <li>같은 주장이나 설명이 표현만 달리해 3회 이상 반복되는가</li>
+            <li>유사한 문장 구조가 3회 이상 반복되는가</li>
+          </ul>
+          <div style="font-weight:900; margin:12px 0 6px">신호 해석</div>
+          <div>일부 반복은 강조일 수 있으나, 과도한 반복은 읽는 사람의 판단 피로를 높일 수 있습니다. 반복이 많은 경우 핵심 메시지를 한 번으로 정리할 수 있는지 점검해 보세요.</div>
+        </div>
+      </details>
+
     </section>
 
     <section class="card" aria-label="입력">
@@ -265,24 +281,24 @@ details.commonDetails .detailsBody{padding:0 16px 12px;}
 
     const categoryMeta = {
       press_release: {
-        label: "Press Release",
+        label: "보도자료",
         hint: "외부 독자/기자 관점에서 기사화 가능성과 오해 소지를 점검합니다."
       },
-      c_level: {
-        label: "C-level 메시지",
-        hint: "리더의 해석과 방향(기준)이 문장에 드러나는지 점검합니다."
-      },
       internal_notice: {
-        label: "내부 안내",
-        hint: "구성원이 읽고 바로 이해·행동할 수 있는지 점검합니다."
+        label: "사내공지",
+        hint: "구성원이 읽고 바로 이해·수용할 수 있는지 점검합니다."
       },
       work_report: {
-        label: "업무 보고",
+        label: "보고서·제안서",
         hint: "의사결정에 필요한 정보(결론/근거/요청)가 정리되어 있는지 점검합니다."
       },
-      sns: {
-        label: "SNS 글",
-        hint: "짧은 문장 안에서 맥락 부족, 단정 표현, 오해 가능성을 점검합니다."
+      c_level: {
+        label: "임원 메시지",
+        hint: "리더의 해석과 방향(기준)이 문장에 드러나는지 점검합니다."
+      },
+      general_doc: {
+        label: "일반 기업 문서",
+        hint: "업무 전달 관점에서 맥락 부족, 단정 표현, 오해 가능성을 점검합니다."
       }
     };
 
@@ -643,7 +659,7 @@ details.commonDetails .detailsBody{padding:0 16px 12px;}
         ));
       }
 
-      if(category === "sns"){
+      if(category === "general_doc"){
         const shortEnough = text.length <= 600 && lines.length <= 6;
         items.push(makeItem(
           "한 번에 읽히는 길이",
